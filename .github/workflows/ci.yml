@@ -16,3 +16,25 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm build
+
+  lighthouse:
+    # Mobile performance gate (>=95) on the three seeded demo tenants.
+    # Requires DATABASE_URL / DIRECT_URL repo secrets pointing at the
+    # already-seeded Neon database, so the demo hosts resolve to real
+    # published configs at runtime.
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @platform/sites build
+      - name: Resolve demo subdomains to localhost
+        run: echo "127.0.0.1 demo-roofing.localhost demo-dental.localhost demo-bistro.localhost" | sudo tee -a /etc/hosts
+      - name: Lighthouse (mobile, performance >= 95) on demo tenants
+        run: pnpm exec lhci autorun --config=lighthouserc.cjs
