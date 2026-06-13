@@ -2,105 +2,11 @@ import type { CSSProperties } from "react";
 import { registerBlock } from "../registry";
 import type { SiteBlock } from "@platform/db";
 import type { RenderContext } from "../registry";
+import { section, h2, btn } from "./shared";
 
-const section = (children: React.ReactNode, style?: CSSProperties) => (
-  <section style={{ padding: "calc(3.5rem * var(--density)) 1.5rem", ...style }}>
-    <div style={{ maxWidth: 1100, margin: "0 auto" }}>{children}</div>
-  </section>
-);
-
-const h2: CSSProperties = {
-  fontFamily: "var(--font-display)",
-  fontSize: "clamp(1.6rem, 3vw, 2.4rem)",
-  color: "var(--color-ink)",
-  marginTop: 0,
-};
-
-const btn: CSSProperties = {
-  display: "inline-block",
-  padding: "0.85rem 1.6rem",
-  borderRadius: "var(--radius)",
-  background: "var(--color-brand)",
-  color: "var(--color-surface)",
-  fontWeight: 600,
-  textDecoration: "none",
-};
-
-// ── Services ─────────────────────────────────────────────────────────
-registerBlock({
-  type: "services",
-  variants: ["cards", "list", "icon-grid"],
-  render: (block: SiteBlock, ctx: RenderContext) => {
-    const heading = (block.props.heading as string) ?? "Our services";
-    const items = [
-      `${ctx.business.niche} repair`,
-      `${ctx.business.niche} installation`,
-      "Emergency service",
-    ];
-    return section(
-      <>
-        <h2 style={h2}>{heading}</h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              block.variant === "list"
-                ? "1fr"
-                : "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: "1.25rem",
-            marginTop: "1.5rem",
-          }}
-        >
-          {items.map((it) => (
-            <div
-              key={it}
-              style={{
-                padding: "1.5rem",
-                borderRadius: "var(--radius)",
-                border: "1px solid color-mix(in srgb, var(--color-muted) 25%, transparent)",
-                background: "var(--color-surface)",
-              }}
-            >
-              <h3 style={{ margin: "0 0 0.5rem", color: "var(--color-ink)" }}>
-                {it}
-              </h3>
-              <p style={{ margin: 0, color: "var(--color-muted)" }}>
-                Professional, licensed, and insured.
-              </p>
-            </div>
-          ))}
-        </div>
-      </>
-    );
-  },
-});
-
-// ── Testimonials ─────────────────────────────────────────────────────
-registerBlock({
-  type: "testimonials",
-  variants: ["carousel", "wall", "single-quote"],
-  render: (block: SiteBlock) => {
-    const heading = (block.props.heading as string) ?? "What customers say";
-    return section(
-      <>
-        <h2 style={h2}>{heading}</h2>
-        <blockquote
-          style={{
-            fontSize: "1.3rem",
-            fontStyle: "italic",
-            color: "var(--color-ink)",
-            borderLeft: "3px solid var(--color-accent)",
-            paddingLeft: "1.25rem",
-            margin: "1.5rem 0 0",
-          }}
-        >
-          “Showed up on time, fair price, did exactly what they said.”
-        </blockquote>
-      </>,
-      { background: "color-mix(in srgb, var(--color-muted) 8%, var(--color-surface))" }
-    );
-  },
-});
+// NOTE: services and testimonials moved to their own files in Week 2
+// (services.tsx, testimonials.tsx) when they grew to three variants each.
+// This file now holds the smaller, single-purpose blocks.
 
 // ── CTA band ─────────────────────────────────────────────────────────
 registerBlock({
@@ -121,7 +27,7 @@ registerBlock({
 });
 
 // ── Contact form ─────────────────────────────────────────────────────
-// Posts to the console lead-intake API; on the public site this is a
+// Posts to the public lead-intake API; on the public site this is a
 // plain HTML form (progressive enhancement happens later).
 registerBlock({
   type: "contact-form",

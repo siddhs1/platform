@@ -11,10 +11,11 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const url = process.env.DIRECT_URL ?? process.env.DATABASE_URL;
-if (!url) throw new Error("DIRECT_URL or DATABASE_URL must be set");
 
 async function main() {
+  const url = process.env.DIRECT_URL ?? process.env.DATABASE_URL;
+  if (!url) throw new Error("DIRECT_URL or DATABASE_URL must be set");
+
   const sql = postgres(url, { max: 1 });
   const db = drizzle(sql);
 

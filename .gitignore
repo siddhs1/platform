@@ -6,3 +6,5 @@ dist/
 *.log
 .DS_Store
 packages/db/drizzle/
+tsconfig.tsbuildinfo
+pnpm-lock.yaml

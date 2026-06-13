@@ -22,25 +22,53 @@ export const tokensSchema = z.object({
   density: z.enum(["compact", "comfortable", "spacious"]),
 });
 
-export const blockSchema = z.object({
-  id: z.string().min(1),
-  type: z.enum([
-    "hero",
-    "services",
-    "testimonials",
-    "service-area",
-    "before-after",
-    "team",
-    "faq",
-    "cta-band",
-    "contact-form",
-    "reviews-feed",
-    "gallery",
-    "footer",
-  ]),
-  variant: z.string().min(1),
-  props: z.record(z.string(), z.unknown()),
-});
+// Allowed variants per block type. Kept in lockstep with the registry in
+// @platform/blocks (each registerBlock() declares the same list). This
+// package intentionally does NOT import @platform/blocks — config stays a
+// pure, dependency-light validation layer — so the contract is duplicated
+// here on purpose. If you add a variant in the registry, add it here too.
+// (A Week 2+ test asserts these two lists match; see blocks/registry.)
+export const BLOCK_VARIANTS = {
+  hero: ["image-right", "full-bleed", "video-bg"],
+  services: ["cards", "list", "icon-grid"],
+  testimonials: ["carousel", "wall", "single-quote"],
+  "service-area": ["map-pins", "city-list", "radius"],
+  "before-after": ["slider", "side-by-side", "toggle"],
+  team: ["grid", "rows", "spotlight"],
+  faq: ["accordion", "two-column", "list"],
+  "cta-band": ["default"],
+  "contact-form": ["split", "stacked"],
+  "reviews-feed": ["stars-summary", "cards", "badges"],
+  gallery: ["masonry", "grid", "filmstrip"],
+  footer: ["default"],
+} as const satisfies Record<string, readonly [string, ...string[]]>;
+
+export type BlockTypeName = keyof typeof BLOCK_VARIANTS;
+
+const blockTypeEnum = z.enum(
+  Object.keys(BLOCK_VARIANTS) as [BlockTypeName, ...BlockTypeName[]]
+);
+
+// A block is valid when its variant is one of the variants registered for
+// its type. superRefine lets the error point at the variant field with a
+// message naming the allowed set — useful feedback in the console editor.
+export const blockSchema = z
+  .object({
+    id: z.string().min(1),
+    type: blockTypeEnum,
+    variant: z.string().min(1),
+    props: z.record(z.string(), z.unknown()),
+  })
+  .superRefine((block, ctx) => {
+    const allowed = BLOCK_VARIANTS[block.type] as readonly string[];
+    if (!allowed.includes(block.variant)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["variant"],
+        message: `invalid variant "${block.variant}" for ${block.type}; expected one of: ${allowed.join(", ")}`,
+      });
+    }
+  });
 
 export const pageSchema = z.object({
   path: z.string().startsWith("/"),
