@@ -30,6 +30,7 @@ import type {
   SitePage,
   FeatureFlags,
   ConfigDiff,
+  ServiceArea,
 } from "./types";
 
 // ── Enums ────────────────────────────────────────────────────────────
@@ -85,6 +86,12 @@ export const tenants = pgTable(
     stripeCustomerId: text("stripe_customer_id"),
     // Clerk organization id — links a tenant to its console logins.
     clerkOrgId: text("clerk_org_id"),
+    // Cities this tenant serves, used to generate /<service>/<city> and
+    // /areas/<city> pages from data. Defaults to an empty array.
+    serviceAreas: jsonb("service_areas")
+      .$type<ServiceArea[]>()
+      .notNull()
+      .default(sql`'[]'::jsonb`),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

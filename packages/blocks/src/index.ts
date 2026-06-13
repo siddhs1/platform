@@ -26,4 +26,14 @@ export {
   type BlockDefinition,
 } from "./registry";
 export { tokensToCssVars, FONT_PAIRS } from "./tokens";
-export { localBusinessJsonLd, type BusinessContext } from "./schema-ld";
+export {
+  localBusinessJsonLd,
+  serviceJsonLd,
+  type BusinessContext,
+} from "./schema-ld";
+export {
+  slugify,
+  servicesForNiche,
+  findServiceBySlug,
+  type ServiceDef,
+} from "./niche";

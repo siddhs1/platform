@@ -7,6 +7,10 @@
  *
  * props.areas is a string[] of city names; falls back to the tenant's
  * home city plus a few generic nearby-area labels so it renders populated.
+ * props.areaLinks (optional) is [{label, href}] — when present, the
+ * city-list and map-pins variants render those cities as links (used to
+ * wire a homepage to its generated /areas/<city> hub pages, and to
+ * interlink the hubs themselves).
  */
 import type { CSSProperties } from "react";
 import { registerBlock } from "../registry";
@@ -14,14 +18,30 @@ import type { SiteBlock } from "@platform/db";
 import type { RenderContext } from "../registry";
 import { section, h2, eyebrow, lead } from "./shared";
 
+interface AreaLink {
+  label: string;
+  href: string;
+}
 interface SAProps {
   heading?: string;
   areas?: string[];
+  areaLinks?: AreaLink[];
   radiusMiles?: number;
+}
+
+interface AreaEntry {
+  label: string;
+  href?: string;
 }
 
 function defaultAreas(city: string): string[] {
   return [city, "Downtown", "North End", "Westside", "Lakeshore", "Eastgate"];
+}
+
+// Prefer explicit linked areas; otherwise plain city labels.
+function toEntries(areas: string[], areaLinks?: AreaLink[]): AreaEntry[] {
+  if (areaLinks && areaLinks.length) return areaLinks;
+  return areas.map((a) => ({ label: a }));
 }
 
 const chip: CSSProperties = {
@@ -33,6 +53,7 @@ const chip: CSSProperties = {
   fontSize: "0.95rem",
   fontWeight: 500,
 };
+const chipLink: CSSProperties = { ...chip, textDecoration: "none" };
 
 function Pin() {
   return (
@@ -49,6 +70,7 @@ registerBlock({
     const p = block.props as SAProps;
     const heading = p.heading ?? `Proudly serving ${ctx.business.city}`;
     const areas = p.areas ?? defaultAreas(ctx.business.city);
+    const entries = toEntries(areas, p.areaLinks);
 
     if (block.variant === "city-list") {
       return section(
@@ -59,11 +81,17 @@ registerBlock({
             On call across {ctx.business.city} and the surrounding {ctx.business.state} communities.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem", marginTop: "1.5rem" }}>
-            {areas.map((a) => (
-              <span key={a} style={chip}>
-                {a}
-              </span>
-            ))}
+            {entries.map((e) =>
+              e.href ? (
+                <a key={e.label} href={e.href} style={chipLink}>
+                  {e.label}
+                </a>
+              ) : (
+                <span key={e.label} style={chip}>
+                  {e.label}
+                </span>
+              )
+            )}
           </div>
         </>
       );
@@ -162,9 +190,9 @@ registerBlock({
             }}
             aria-hidden
           />
-          {areas.slice(0, positions.length).map((a, i) => (
+          {entries.slice(0, positions.length).map((e, i) => (
             <div
-              key={a}
+              key={e.label}
               style={{
                 position: "absolute",
                 top: positions[i]!.top,
@@ -187,7 +215,13 @@ registerBlock({
                   borderRadius: 4,
                 }}
               >
-                {a}
+                {e.href ? (
+                  <a href={e.href} style={{ color: "inherit", textDecoration: "none" }}>
+                    {e.label}
+                  </a>
+                ) : (
+                  e.label
+                )}
               </span>
             </div>
           ))}

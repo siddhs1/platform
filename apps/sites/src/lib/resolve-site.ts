@@ -8,7 +8,7 @@
 import { db, schema } from "@platform/db";
 import { and, eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
-import type { SiteTokens, SitePage, FeatureFlags } from "@platform/db";
+import type { SiteTokens, SitePage, FeatureFlags, ServiceArea } from "@platform/db";
 
 export interface ResolvedSite {
   tenantId: string;
@@ -20,6 +20,7 @@ export interface ResolvedSite {
   pages: SitePage[];
   customCss: string;
   featureFlags: FeatureFlags;
+  serviceAreas: ServiceArea[];
 }
 
 async function loadSite(hostname: string): Promise<ResolvedSite | null> {
@@ -34,6 +35,7 @@ async function loadSite(hostname: string): Promise<ResolvedSite | null> {
       pages: schema.siteConfigs.pages,
       customCss: schema.siteConfigs.customCss,
       featureFlags: schema.siteConfigs.featureFlags,
+      serviceAreas: schema.tenants.serviceAreas,
     })
     .from(schema.domains)
     .innerJoin(

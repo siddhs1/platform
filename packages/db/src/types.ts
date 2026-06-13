@@ -67,3 +67,12 @@ export interface ConfigDiff {
   before: unknown;
   after: unknown;
 }
+
+
+// -- Service areas (per tenant) ----------------------------------------
+// Cities a tenant serves. Used to generate per-service/per-city pages
+// (/<service>/<city>) and /areas/<city> hubs from data, not hand-authoring.
+export interface ServiceArea {
+  city: string;
+  state: string;
+}

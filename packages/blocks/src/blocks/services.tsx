@@ -4,41 +4,41 @@
  *   list      — single-column rows with a leading rule, scannable
  *   icon-grid — compact tiles with a glyph mark, denser
  *
- * Items are derived from the tenant's niche so the block reads as
- * authored even before a VA edits copy. Subtle lift-on-hover; disabled
- * under prefers-reduced-motion.
+ * Items are derived from the tenant's niche (via servicesForNiche, the
+ * shared catalog) so the block reads as authored even before a VA edits
+ * copy. An item may carry an optional `href` — used by generated city/
+ * service pages to link each service to its /<service>/<city> page.
+ * Subtle lift-on-hover; disabled under prefers-reduced-motion.
  */
 import type { CSSProperties } from "react";
 import { registerBlock } from "../registry";
 import type { SiteBlock } from "@platform/db";
 import type { RenderContext } from "../registry";
+import { servicesForNiche } from "../niche";
 import { section, h2, eyebrow, card } from "./shared";
 
 interface ServiceItem {
   title: string;
   body: string;
+  href?: string;
 }
 
 function defaultItems(niche: string): ServiceItem[] {
-  const singular = niche.replace(/s$/, "");
-  return [
-    {
-      title: `${singular} repair`,
-      body: "Fast, reliable fixes that hold up — diagnosed right the first time.",
-    },
-    {
-      title: `${singular} installation`,
-      body: "New systems sized and fitted to your property, built to last.",
-    },
-    {
-      title: "Emergency service",
-      body: "Same-day response when something can't wait. We pick up the phone.",
-    },
-    {
-      title: "Maintenance plans",
-      body: "Scheduled upkeep that prevents the expensive surprises.",
-    },
-  ];
+  // Names/blurbs come from the shared catalog so they stay in sync with
+  // the slugs used for /<service>/<city> page generation.
+  return servicesForNiche(niche).map((s) => ({ title: s.name, body: s.blurb }));
+}
+
+// Render a card/list/tile title, as a link when the item has an href.
+function Title({ item, style }: { item: ServiceItem; style?: CSSProperties }) {
+  if (item.href) {
+    return (
+      <a href={item.href} style={{ color: "inherit", textDecoration: "none" }}>
+        {item.title}
+      </a>
+    );
+  }
+  return <>{item.title}</>;
 }
 
 // One small glyph per tile for the icon-grid variant. Inline SVG keeps
@@ -115,7 +115,7 @@ registerBlock({
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {it.title}
+                  <Title item={it} />
                 </h3>
                 <p style={{ margin: 0, color: "var(--color-muted)" }}>{it.body}</p>
               </div>
@@ -168,7 +168,7 @@ registerBlock({
                     fontSize: "1.02rem",
                   }}
                 >
-                  {it.title}
+                  <Title item={it} />
                 </h3>
                 <p
                   style={{
@@ -203,7 +203,7 @@ registerBlock({
           {items.map((it) => (
             <div key={it.title} className={styleId} style={card}>
               <h3 style={{ margin: "0 0 0.5rem", color: "var(--color-ink)" }}>
-                {it.title}
+                <Title item={it} />
               </h3>
               <p style={{ margin: 0, color: "var(--color-muted)" }}>{it.body}</p>
             </div>

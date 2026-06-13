@@ -1,13 +1,15 @@
 /**
- * The renderer. Resolves the tenant from the [host] segment, finds the
- * page matching the request path, and renders its blocks through the
- * shared registry. Unknown block types render nothing (never crash a
- * client site). Tokens are injected as CSS variables; JSON-LD schema is
- * emitted per page.
+ * The renderer. Resolves the tenant from the [host] segment, then asks
+ * getPageForRequest for the page matching the request path — an authored
+ * page, or a generated /<service>/<city> or /areas/<city> page. Unknown
+ * paths 404; unknown block types render nothing (never crash a client
+ * site). Tokens are injected as CSS variables; LocalBusiness JSON-LD is
+ * always emitted, plus any page-specific schema (e.g. Service).
  */
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { resolveSite } from "../../../../lib/resolve-site";
+import { getPageForRequest } from "../../../../lib/generated-pages";
 import {
   renderBlock,
   tokensToCssVars,
@@ -32,13 +34,13 @@ export async function generateMetadata({
   const { host, path } = await params;
   const site = await resolveSite(decodeURIComponent(host));
   if (!site) return {};
-  const current =
-    site.pages.find((p) => p.path === pathFromSegments(path)) ??
-    site.pages[0];
+  const requested = getPageForRequest(site, pathFromSegments(path));
+  if (!requested) return {};
+  const { page } = requested;
   return {
-    title: current?.title ?? site.businessName,
-    description: current?.meta.description,
-    keywords: current?.meta.keywords,
+    title: page.title ?? site.businessName,
+    description: page.meta.description,
+    keywords: page.meta.keywords,
   };
 }
 
@@ -51,13 +53,23 @@ export default async function SitePage({
   const site = await resolveSite(decodeURIComponent(host));
   if (!site) notFound();
 
-  const requestedPath = pathFromSegments(path);
-  const page =
-    site.pages.find((p) => p.path === requestedPath) ??
-    (requestedPath === "/" ? site.pages[0] : undefined);
-  if (!page) notFound();
+  const requested = getPageForRequest(site, pathFromSegments(path));
+  if (!requested) notFound();
+  const { page, blockBusiness, extraJsonLd } = requested;
 
   const cssVars = tokensToCssVars(site.tokens);
+
+  // Always emit LocalBusiness for the HQ; generated money pages add a
+  // city-scoped Service entry via extraJsonLd.
+  const jsonLd: object[] = [
+    localBusinessJsonLd({
+      name: site.businessName,
+      niche: site.niche,
+      city: site.city,
+      state: site.state,
+    }),
+    ...extraJsonLd,
+  ];
 
   return (
     <div style={cssVars} data-tenant={site.tenantId}>
@@ -66,32 +78,20 @@ export default async function SitePage({
         <style dangerouslySetInnerHTML={{ __html: site.customCss }} />
       ) : null}
 
-      {/* LocalBusiness schema for local SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            localBusinessJsonLd({
-              name: site.businessName,
-              niche: site.niche,
-              city: site.city,
-              state: site.state,
-            })
-          ),
-        }}
-      />
+      {jsonLd.map((ld, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
+        />
+      ))}
 
       <main>
         {page.blocks.map((block) =>
           renderBlock(block, {
             tokens: site.tokens,
             featureFlags: site.featureFlags,
-            business: {
-              name: site.businessName,
-              niche: site.niche,
-              city: site.city,
-              state: site.state,
-            },
+            business: blockBusiness,
           })
         )}
       </main>
