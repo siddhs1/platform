@@ -6,31 +6,62 @@
 import type { CSSProperties } from "react";
 import type { SiteTokens } from "@platform/db";
 
-// Curated font pairings (8-10). Each maps a display + body family.
-// Loaded via next/font in the app; here we only name the CSS stacks.
+// Curated font pairings (display + body). The families are loaded once,
+// document-wide, by next/font in apps/sites/src/app/fonts.ts, which exposes
+// each as a `--f-<slug>` CSS variable. Here the stacks just point at those
+// variables (with a system fallback so text still renders before the face
+// loads, or if a family is ever removed).
+//
+// CONTRACT: every var(--f-…) below must have a matching next/font instance
+// in fonts.ts. Keep the two in sync when adding or removing a pairing.
 export const FONT_PAIRS: Record<
   string,
   { display: string; body: string }
 > = {
+  // sans display + neutral sans — clean, modern, trades/contractor default
   "archivo-inter": {
-    display: '"Archivo", system-ui, sans-serif',
-    body: '"Inter", system-ui, sans-serif',
+    display: "var(--f-archivo), system-ui, sans-serif",
+    body: "var(--f-inter), system-ui, sans-serif",
   },
+  // warm serif + friendly sans — approachable, good for health/wellness
   "fraunces-nunito": {
-    display: '"Fraunces", Georgia, serif',
-    body: '"Nunito Sans", system-ui, sans-serif',
+    display: "var(--f-fraunces), Georgia, serif",
+    body: "var(--f-nunito), system-ui, sans-serif",
   },
+  // high-contrast serif + clean sans — elegant, hospitality/boutique
   "playfair-source": {
-    display: '"Playfair Display", Georgia, serif',
-    body: '"Source Sans 3", system-ui, sans-serif',
+    display: "var(--f-playfair), Georgia, serif",
+    body: "var(--f-source), system-ui, sans-serif",
   },
+  // techy geometric display + neutral sans — modern services/tech-leaning
   "space-inter": {
-    display: '"Space Grotesk", system-ui, sans-serif',
-    body: '"Inter", system-ui, sans-serif',
+    display: "var(--f-space), system-ui, sans-serif",
+    body: "var(--f-inter), system-ui, sans-serif",
   },
-  "sohne-tiempos": {
-    display: '"Tiempos Headline", Georgia, serif',
-    body: '"Söhne", system-ui, sans-serif',
+  // readable serif + humanist sans — editorial, professional services
+  "lora-worksans": {
+    display: "var(--f-lora), Georgia, serif",
+    body: "var(--f-work), system-ui, sans-serif",
+  },
+  // expressive grotesque display + neutral sans — distinctive, creative
+  "bricolage-inter": {
+    display: "var(--f-bricolage), system-ui, sans-serif",
+    body: "var(--f-inter), system-ui, sans-serif",
+  },
+  // literary serif + clean geometric sans — calm, premium services
+  "spectral-manrope": {
+    display: "var(--f-spectral), Georgia, serif",
+    body: "var(--f-manrope), system-ui, sans-serif",
+  },
+  // rounded geometric display + geometric sans — soft, friendly retail
+  "sora-dmsans": {
+    display: "var(--f-sora), system-ui, sans-serif",
+    body: "var(--f-dmsans), system-ui, sans-serif",
+  },
+  // editorial display serif + geometric sans — upscale, restaurants/brands
+  "dmserif-dmsans": {
+    display: "var(--f-dmserif), Georgia, serif",
+    body: "var(--f-dmsans), system-ui, sans-serif",
   },
 };
 
