@@ -760,3 +760,136 @@ select.input {
 .status-form .btn {
   padding: 6px 11px;
 }
+
+/* ============================================================
+   Editor · live preview · publish  (Week 3, P8)
+   ============================================================ */
+
+/* ---------- banners ---------- */
+.banner {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 18px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+.banner.ok {
+  background: var(--ok-soft);
+  color: var(--ok);
+  border-color: #cfe6d8;
+}
+.banner.error {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: #ecc7c3;
+}
+
+/* ---------- editor layout ---------- */
+.editor-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 1000px) {
+  .editor-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.editor-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 18px;
+  border-top: 1px solid var(--line);
+  background: #fcfaf7;
+}
+
+/* ---------- form fields ---------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.field:last-child {
+  margin-bottom: 0;
+}
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.field-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.field-row .field,
+.field-group .field {
+  margin-bottom: 0;
+}
+.color-field {
+  margin-bottom: 0;
+}
+.color-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.color-input {
+  width: 38px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--paper);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+textarea.input {
+  resize: vertical;
+  width: 100%;
+  line-height: 1.45;
+}
+
+/* ---------- live preview pane ---------- */
+.editor-preview {
+  position: sticky;
+  top: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.preview-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  background: #fcfaf7;
+}
+.preview-frame {
+  display: block;
+  width: 100%;
+  height: 70vh;
+  border: 0;
+  background: #fff;
+}

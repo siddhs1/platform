@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { SignIn } from "@clerk/nextjs";
+import "../../globals.css";
 import { clerkEnabled, devNoAuth } from "@/lib/clerk";
 
 export const dynamic = "force-dynamic";

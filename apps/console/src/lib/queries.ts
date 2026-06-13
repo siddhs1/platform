@@ -199,3 +199,140 @@ export async function findTenantBySlug(
     .limit(1);
   return rows[0] ?? null;
 }
+
+/* ───────────────────── config editing & publishing ─────────────────────
+ * The editor edits the draft row; publishing copies a validated config to
+ * the published row and appends an immutable version snapshot. Validation
+ * happens at the action boundary (via @platform/config); these helpers do
+ * the DB work. Not transactional over neon-http — the UNIQUE(tenant,
+ * version) index guards against duplicate versions under concurrent writes.
+ */
+
+export interface ConfigVersionRow {
+  version: number;
+  publishedAt: Date;
+  publishedBy: string | null;
+}
+
+type PublishableConfig = {
+  tokens: SiteTokens;
+  pages: SitePage[];
+  customCss: string;
+  featureFlags: FeatureFlags;
+};
+
+export async function updateDraftConfig(
+  tenantId: string,
+  patch: { tokens: SiteTokens; customCss: string }
+): Promise<void> {
+  await db
+    .update(schema.siteConfigs)
+    .set({ tokens: patch.tokens, customCss: patch.customCss, updatedAt: new Date() })
+    .where(
+      and(
+        eq(schema.siteConfigs.tenantId, tenantId),
+        eq(schema.siteConfigs.state, "draft")
+      )
+    );
+}
+
+async function nextVersion(tenantId: string): Promise<number> {
+  const pub = await db
+    .select({ v: schema.siteConfigs.version })
+    .from(schema.siteConfigs)
+    .where(
+      and(
+        eq(schema.siteConfigs.tenantId, tenantId),
+        eq(schema.siteConfigs.state, "published")
+      )
+    )
+    .limit(1);
+  const ver = await db
+    .select({ m: sql<number>`coalesce(max(${schema.configVersions.version}), 0)::int` })
+    .from(schema.configVersions)
+    .where(eq(schema.configVersions.tenantId, tenantId));
+  const current = Math.max(pub[0]?.v ?? 0, ver[0]?.m ?? 0);
+  return current + 1;
+}
+
+/** Write a validated config to the published row and append a version
+ *  snapshot. Shared by publish (from draft) and rollback (from an older
+ *  snapshot). Returns the new version number. */
+export async function publishConfig(
+  tenantId: string,
+  config: PublishableConfig,
+  publishedBy: string | null
+): Promise<number> {
+  const version = await nextVersion(tenantId);
+  const now = new Date();
+  await db
+    .insert(schema.siteConfigs)
+    .values({
+      tenantId,
+      state: "published",
+      tokens: config.tokens,
+      pages: config.pages,
+      customCss: config.customCss,
+      featureFlags: config.featureFlags,
+      version,
+      publishedAt: now,
+      publishedBy,
+    })
+    .onConflictDoUpdate({
+      target: [schema.siteConfigs.tenantId, schema.siteConfigs.state],
+      set: {
+        tokens: config.tokens,
+        pages: config.pages,
+        customCss: config.customCss,
+        featureFlags: config.featureFlags,
+        version,
+        publishedAt: now,
+        publishedBy,
+        updatedAt: now,
+      },
+    });
+  await db
+    .insert(schema.configVersions)
+    .values({ tenantId, version, snapshot: config, publishedBy });
+  return version;
+}
+
+export async function listConfigVersions(
+  tenantId: string
+): Promise<ConfigVersionRow[]> {
+  return db
+    .select({
+      version: schema.configVersions.version,
+      publishedAt: schema.configVersions.publishedAt,
+      publishedBy: schema.configVersions.publishedBy,
+    })
+    .from(schema.configVersions)
+    .where(eq(schema.configVersions.tenantId, tenantId))
+    .orderBy(desc(schema.configVersions.version));
+}
+
+/** Raw snapshot for a given version (validate before use). */
+export async function getVersionSnapshot(
+  tenantId: string,
+  version: number
+): Promise<unknown> {
+  const rows = await db
+    .select({ snapshot: schema.configVersions.snapshot })
+    .from(schema.configVersions)
+    .where(
+      and(
+        eq(schema.configVersions.tenantId, tenantId),
+        eq(schema.configVersions.version, version)
+      )
+    )
+    .limit(1);
+  return rows[0]?.snapshot ?? null;
+}
+
+export async function getTenantHostnames(tenantId: string): Promise<string[]> {
+  const rows = await db
+    .select({ hostname: schema.domains.hostname })
+    .from(schema.domains)
+    .where(eq(schema.domains.tenantId, tenantId));
+  return rows.map((r) => r.hostname);
+}
