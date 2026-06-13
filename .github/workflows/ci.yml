@@ -3,13 +3,21 @@ on:
   push: { branches: [main, staging] }
   pull_request: {}
 
+env:
+  # actions/checkout and pnpm/action-setup declare a node20 runtime, which
+  # GitHub is deprecating (forced to node24 from 2026-06-16). Opt in now so
+  # the actions run on node24 and the deprecation warning clears.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # No `version:` here on purpose — action-setup reads the exact pnpm
+      # version from package.json "packageManager". Specifying both errors
+      # with ERR_PNPM_BAD_PM_VERSION.
       - uses: pnpm/action-setup@v4
-        with: { version: 9 }
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
@@ -29,7 +37,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with: { version: 9 }
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
