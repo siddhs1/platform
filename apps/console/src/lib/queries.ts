@@ -149,3 +149,53 @@ export async function listChangeRequests(
     .where(eq(schema.changeRequests.tenantId, tenantId))
     .orderBy(desc(schema.changeRequests.createdAt));
 }
+
+/* ───────────────────────── mutations ─────────────────────────
+ * Writes scope by tenant_id explicitly too. The lead-status update
+ * matches on (id AND tenant_id) so a mis-routed id can never touch a
+ * different tenant's row. Authorization (operator vs client scope) is
+ * enforced in the calling server action via canAccessTenant() before
+ * these run.
+ */
+
+export async function updateLeadStatus(
+  tenantId: string,
+  leadId: string,
+  status: LeadRow["status"]
+): Promise<void> {
+  await db
+    .update(schema.leads)
+    .set({ status })
+    .where(
+      and(eq(schema.leads.id, leadId), eq(schema.leads.tenantId, tenantId))
+    );
+}
+
+export async function createCallLead(input: {
+  tenantId: string;
+  name?: string | null;
+  phone?: string | null;
+  callSid?: string | null;
+}): Promise<void> {
+  await db.insert(schema.leads).values({
+    tenantId: input.tenantId,
+    source: "call",
+    name: input.name ?? null,
+    phone: input.phone ?? null,
+    message: "Inbound phone call",
+    twilioCallSid: input.callSid ?? null,
+  });
+}
+
+/** Session-less tenant lookup by slug, for public webhooks (e.g. Twilio).
+ *  Callers must not expose tenant data to end users through this. */
+export async function findTenantBySlug(
+  slug: string
+): Promise<TenantRow | null> {
+  const rows = await db
+    .select()
+    .from(schema.tenants)
+    .where(eq(schema.tenants.slug, slug))
+    .limit(1);
+  return rows[0] ?? null;
+}
