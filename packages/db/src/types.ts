@@ -36,7 +36,13 @@ export type BlockType =
   | "contact-form"
   | "reviews-feed"
   | "gallery"
-  | "footer";
+  | "footer"
+  | "trust-bar"
+  | "why-us"
+  | "story"
+  | "stats"
+  | "credentials"
+  | "guarantee";
 
 export interface SiteBlock {
   id: string; // stable id for reorder/edit

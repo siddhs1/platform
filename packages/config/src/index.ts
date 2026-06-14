@@ -41,6 +41,12 @@ export const BLOCK_VARIANTS = {
   "reviews-feed": ["stars-summary", "cards", "badges"],
   gallery: ["masonry", "grid", "filmstrip"],
   footer: ["default"],
+  "trust-bar": ["stats"],
+  "why-us": ["icon-grid"],
+  story: ["prose"],
+  stats: ["cards"],
+  credentials: ["badges"],
+  guarantee: ["banner"],
 } as const satisfies Record<string, readonly [string, ...string[]]>;
 
 export type BlockTypeName = keyof typeof BLOCK_VARIANTS;

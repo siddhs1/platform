@@ -16,6 +16,8 @@ import "./blocks/team";
 import "./blocks/faq";
 import "./blocks/reviews-feed";
 import "./blocks/gallery";
+import "./blocks/home-blocks";
+import "./blocks/about-blocks";
 
 export {
   renderBlock,
