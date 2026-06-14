@@ -4,7 +4,7 @@
  * to the same /api/lead endpoint; NAP/hours come from props when a page
  * template supplies them (it has the business profile), else sensible
  * generic defaults so the gallery still renders. Legal/financing copy is
- * placeholder scaffolding — real copy is an owner task (SETUP_CHECKLIST).
+ * placeholder scaffolding - real copy is an owner task (SETUP_CHECKLIST).
  */
 import type { CSSProperties, ReactNode } from "react";
 import { registerBlock } from "../registry";
@@ -35,14 +35,14 @@ function Ico({ name, size = 16, color = "var(--color-brand)" }: { name: IcoName;
   );
 }
 
-// ── Contact: form + map placeholder + NAP/hours ───────────────────────
+// -- Contact: form + map placeholder + NAP/hours -----------------------
 interface Hours {
   label: string;
   value: string;
 }
 const HOURS_DEFAULT: Hours[] = [
-  { label: "Mon–Fri", value: "8 AM – 6 PM" },
-  { label: "Sat", value: "9 AM – 2 PM" },
+  { label: "Mon-Fri", value: "8 AM - 6 PM" },
+  { label: "Sat", value: "9 AM - 2 PM" },
   { label: "Sun", value: "Closed" },
 ];
 
@@ -83,7 +83,7 @@ registerBlock({
                 <div>
                   {hours.map((h, i) => (
                     <div key={i} style={{ fontSize: "0.95rem" }}>
-                      <strong style={{ fontWeight: 600 }}>{h.label}</strong> · {h.value}
+                      <strong style={{ fontWeight: 600 }}>{h.label}</strong> - {h.value}
                     </div>
                   ))}
                 </div>
@@ -96,15 +96,15 @@ registerBlock({
   },
 });
 
-// ── Financing: options/info (calculator is L4/[P2]) ───────────────────
+// -- Financing: options/info (calculator is L4/[P2]) -------------------
 interface FinOption {
   title: string;
   body: string;
 }
 const FIN_DEFAULTS: FinOption[] = [
-  { title: "0% APR plans", body: "Qualified buyers can spread the cost over 12–18 months, interest-free." },
+  { title: "0% APR plans", body: "Qualified buyers can spread the cost over 12-18 months, interest-free." },
   { title: "Low monthly payments", body: "Get the work done now and pay over time with a plan that fits your budget." },
-  { title: "Fast approval", body: "Apply in minutes with a quick, no-obligation decision — no hard credit hit to check." },
+  { title: "Fast approval", body: "Apply in minutes with a quick, no-obligation decision - no hard credit hit to check." },
 ];
 
 registerBlock({
@@ -126,14 +126,14 @@ registerBlock({
           ))}
         </div>
         <p style={{ color: "var(--color-muted)", fontSize: "0.85rem", marginTop: "1.25rem" }}>
-          Financing subject to credit approval. Terms and availability vary — ask us for details.
+          Financing subject to credit approval. Terms and availability vary - ask us for details.
         </p>
       </>
     );
   },
 });
 
-// ── Legal: long-form prose template (privacy/terms/accessibility) ─────
+// -- Legal: long-form prose template (privacy/terms/accessibility) -----
 registerBlock({
   type: "legal",
   variants: ["prose"],
@@ -147,7 +147,7 @@ registerBlock({
         ? [propBody]
         : [
             `This page explains how ${ctx.business.name} collects, uses, and protects your information. By using this website, you agree to the practices described here.`,
-            `We collect only the information you choose to provide — such as your name, phone number, and email when you request a quote — along with basic, anonymous analytics about how the site is used. We do not sell your personal information to third parties.`,
+            `We collect only the information you choose to provide - such as your name, phone number, and email when you request a quote - along with basic, anonymous analytics about how the site is used. We do not sell your personal information to third parties.`,
             `You may request a copy of the information we hold about you, or ask us to delete it, at any time. If you have questions about this policy or your data, please reach out using the details on our contact page.`,
           ];
     const para: CSSProperties = { color: "var(--color-ink)", fontSize: "1.05rem", lineHeight: 1.75, margin: "0 0 1.1rem" };

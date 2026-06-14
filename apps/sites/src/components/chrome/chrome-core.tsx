@@ -4,7 +4,7 @@
  * <style> block the chrome needs for the things inline styles can't express
  * (:hover, :focus-visible, responsive show/hide, footer-grid collapse).
  *
- * This module is import-safe from both server and client components — it
+ * This module is import-safe from both server and client components - it
  * holds no server-only APIs. Colours resolve from the L1 token CSS vars
  * (--color-ink/brand/accent/surface, --radius, --font-display) that the
  * renderer sets on the wrapping element, so the chrome restyles per tenant.
@@ -14,7 +14,7 @@ import type { CSSProperties } from "react";
 /** Max content width for the chrome (header + footer inner). */
 export const CHROME_MAX = 1200;
 
-/** tel: href — keep digits and a leading +, drop formatting. */
+/** tel: href - keep digits and a leading +, drop formatting. */
 export const telHref = (p: string) => p.replace(/[^\d+]/g, "");
 
 /** Primary CTA style, honouring the tenant's buttonStyle token (accent). */

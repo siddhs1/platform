@@ -1,13 +1,13 @@
 /**
- * Hostname routing — the core of the multi-tenant sites app.
+ * Hostname routing - the core of the multi-tenant sites app.
  *
  * Every incoming request is rewritten to an internal /_sites/[host]/...
  * path. The tenant is resolved from the hostname inside the route (where
- * we have DB access and caching), not here — middleware runs on the edge
+ * we have DB access and caching), not here - middleware runs on the edge
  * and stays cheap: it only normalizes the host and rewrites the URL.
  *
  * Locally, demo tenants resolve as subdomains of localhost:
- *   demo-roofing.localhost:3000  →  /_sites/demo-roofing.localhost:3000/
+ *   demo-roofing.localhost:3000  ->  /_sites/demo-roofing.localhost:3000/
  * In production, client custom domains (joesroofing.com) hit Cloudflare
  * for SaaS, which forwards to this app with the original Host header.
  */

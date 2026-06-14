@@ -1,9 +1,9 @@
 /**
  * FAQ block. Doubles as SEO surface: also emits FAQPage structured data
  * so questions can win rich results.
- *   accordion  — expandable rows using native <details> (default)
- *   two-column — Q&A laid out in two columns, all open
- *   list       — simple stacked Q (bold) + A
+ *   accordion  - expandable rows using native <details> (default)
+ *   two-column - Q&A laid out in two columns, all open
+ *   list       - simple stacked Q (bold) + A
  *
  * props.items: { q, a }[]. Falls back to a generic local-service FAQ set.
  * Accordion uses <details>/<summary> so it works without client JS and
@@ -23,7 +23,7 @@ interface QA {
 
 function defaultItems(niche: string, city: string): QA[] {
   return [
-    { q: "Are you licensed and insured?", a: "Yes — fully licensed and insured. We'll share documentation on request before any work begins." },
+    { q: "Are you licensed and insured?", a: "Yes - fully licensed and insured. We'll share documentation on request before any work begins." },
     { q: `Do you serve all of ${city}?`, a: `We cover ${city} and the surrounding area. Call and we'll confirm we reach you.` },
     { q: "Do you offer free estimates?", a: "Most jobs start with a free, no-obligation estimate so you know the cost up front." },
     { q: "How fast can you come out?", a: "Same-day or next-day for most calls, and we prioritize true emergencies." },

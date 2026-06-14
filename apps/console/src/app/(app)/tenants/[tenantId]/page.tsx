@@ -80,7 +80,7 @@ export default async function TenantOverviewPage({
                 {tenant.serviceAreas.length > 0 ? (
                   `${tenant.serviceAreas.length} cities`
                 ) : (
-                  <span className="muted">—</span>
+                  <span className="muted">-</span>
                 )}
               </dd>
             </div>
@@ -125,7 +125,7 @@ export default async function TenantOverviewPage({
                 {published?.publishedAt ? (
                   formatDate(published.publishedAt)
                 ) : (
-                  <span className="muted">—</span>
+                  <span className="muted">-</span>
                 )}
               </dd>
             </div>

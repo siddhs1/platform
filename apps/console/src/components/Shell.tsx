@@ -58,7 +58,7 @@ export default function Shell({
             </SignOutButton>
           ) : null}
 
-          <div className="build-tag">v0.1 · wk3</div>
+          <div className="build-tag">v0.1 - wk3</div>
         </div>
       </aside>
 

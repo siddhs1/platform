@@ -4,7 +4,7 @@
  * scoped styles, the sticky header (logo + desktop nav + phone + CTA, or the
  * mobile hamburger), the dark sitemap footer, and the mobile sticky call bar.
  *
- * This is intentionally NOT a registry block — the theme gallery and the
+ * This is intentionally NOT a registry block - the theme gallery and the
  * console live-preview render pages WITHOUT chrome. Everything is token-driven
  * so the chrome matches each tenant's palette, fonts, radius, and button style.
  */
@@ -81,7 +81,7 @@ function SiteFooter({ nav }: { nav: SiteNav }) {
               {m.hours.length > 0 && (
                 <span style={contactRow}>
                   <Icon name="clock" size={13} style={{ color: "var(--color-brand)", flex: "none" }} />
-                  {m.hours.map((h) => `${h.label} ${h.value}`).join(" · ")}
+                  {m.hours.map((h) => `${h.label} ${h.value}`).join(" - ")}
                 </span>
               )}
             </div>
@@ -110,7 +110,7 @@ function SiteFooter({ nav }: { nav: SiteNav }) {
 
         <div style={{ borderTop: "1px solid color-mix(in srgb, var(--color-surface) 12%, transparent)", padding: "16px 0", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
           <span style={{ fontSize: 12, color: "color-mix(in srgb, var(--color-surface) 50%, var(--color-ink))" }}>
-            © {m.year} {m.businessName}{m.licenseNumber ? ` · Lic# ${m.licenseNumber}` : ""}{m.insured ? " · Insured" : ""}
+            (c) {m.year} {m.businessName}{m.licenseNumber ? ` - Lic# ${m.licenseNumber}` : ""}{m.insured ? " - Insured" : ""}
           </span>
           <div style={{ display: "flex", gap: 16, fontSize: 12 }}>
             {m.legalLinks.map((l) => (
@@ -158,7 +158,7 @@ export function SiteShell({ site, children }: { site: ResolvedSite; children: Re
 
 
 /**
- * Breadcrumb bar — rendered by the renderer at the top of <main> on inner
+ * Breadcrumb bar - rendered by the renderer at the top of <main> on inner
  * pages. Returns null on the home page (a single crumb). Structurally typed
  * crumbs ({ name, href? }) so it needs no import from the routing module.
  */

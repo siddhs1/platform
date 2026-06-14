@@ -5,7 +5,7 @@
  *
  * A registry entry declares the block's allowed variants and its render
  * function. A block whose type isn't registered, or whose L4 feature
- * flag is off, renders nothing — a bad config never 500s a client site.
+ * flag is off, renders nothing - a bad config never 500s a client site.
  */
 import type { ReactNode } from "react";
 import type {

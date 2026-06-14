@@ -22,7 +22,7 @@ export const dynamic = "force-dynamic";
  * source of truth for subscription state: upsertSubscription keys on the
  * Stripe subscription id so repeated or out-of-order deliveries converge.
  *
- * Degrades like the rest of the Stripe surface — if billing is not
+ * Degrades like the rest of the Stripe surface - if billing is not
  * configured we return 400 so Stripe surfaces the misconfiguration rather
  * than silently dropping events.
  */

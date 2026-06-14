@@ -1,5 +1,5 @@
 /**
- * Design tokens â†’ CSS custom properties. Every block reads only from
+ * Design tokens -- CSS custom properties. Every block reads only from
  * these variables, so changing a tenant's tokens restyles the whole site
  * with no code change. This is Layer 1 of the customization model.
  */
@@ -12,7 +12,7 @@ import type { SiteTokens } from "@platform/db";
 // variables (with a system fallback so text still renders before the face
 // loads, or if a family is ever removed).
 //
-// CONTRACT: every var(--f-â€¦) below must have a matching next/font instance
+// CONTRACT: every var(--f---) below must have a matching next/font instance
 // in fonts.ts. Keep the two in sync when adding or removing a pairing.
 export const FONT_PAIRS: Record<
   string,

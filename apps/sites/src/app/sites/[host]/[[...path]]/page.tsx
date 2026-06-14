@@ -1,6 +1,6 @@
 /**
  * The renderer. Resolves the tenant from the [host] segment, then asks
- * getPageForRequest for the page matching the request path — an authored
+ * getPageForRequest for the page matching the request path - an authored
  * page, or a generated /<service>/<city> or /areas/<city> page. Unknown
  * paths 404; unknown block types render nothing (never crash a client
  * site). Tokens are injected as CSS variables; LocalBusiness JSON-LD is

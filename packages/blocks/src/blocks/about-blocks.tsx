@@ -18,7 +18,7 @@ function ShieldCheck({ color = "var(--color-brand)", size = 22 }: { color?: stri
   );
 }
 
-// ── Story: prose / rich-text section ──────────────────────────────────
+// -- Story: prose / rich-text section ----------------------------------
 registerBlock({
   type: "story",
   variants: ["prose"],
@@ -32,9 +32,9 @@ registerBlock({
       : typeof propBody === "string"
         ? [propBody]
         : [
-            `${name} has proudly served ${city}, ${state} and the surrounding communities for years. What began as a small local ${nicheLower} has grown into a name your neighbors trust — built one honest job at a time.`,
+            `${name} has proudly served ${city}, ${state} and the surrounding communities for years. What began as a small local ${nicheLower} has grown into a name your neighbors trust - built one honest job at a time.`,
             `We believe in doing the work right the first time: quality craftsmanship, straightforward pricing, and treating every property like it were our own. Our team is fully licensed, insured, and focused on the kind of service that earns repeat customers and word-of-mouth referrals.`,
-            `From your first call to the final walkthrough, we keep the process simple and the communication clear — so you always know what to expect.`,
+            `From your first call to the final walkthrough, we keep the process simple and the communication clear - so you always know what to expect.`,
           ];
     const para: CSSProperties = { color: "var(--color-ink)", fontSize: "1.05rem", lineHeight: 1.7, margin: "0 0 1rem" };
     return section(
@@ -51,7 +51,7 @@ registerBlock({
   },
 });
 
-// ── Stats: metric cards ───────────────────────────────────────────────
+// -- Stats: metric cards -----------------------------------------------
 interface Metric {
   value: string;
   label: string;
@@ -59,7 +59,7 @@ interface Metric {
 const STAT_DEFAULTS: Metric[] = [
   { value: "20+", label: "Years in business" },
   { value: "2,500+", label: "Projects completed" },
-  { value: "4.9★", label: "Average rating" },
+  { value: "4.9*", label: "Average rating" },
   { value: "< 24h", label: "Typical response" },
 ];
 
@@ -88,7 +88,7 @@ registerBlock({
   },
 });
 
-// ── Credentials: license / insurance / cert badges ────────────────────
+// -- Credentials: license / insurance / cert badges --------------------
 interface Credential {
   label: string;
   sub?: string;
@@ -131,7 +131,7 @@ registerBlock({
   },
 });
 
-// ── Guarantee: warranty / satisfaction callout ────────────────────────
+// -- Guarantee: warranty / satisfaction callout ------------------------
 registerBlock({
   type: "guarantee",
   variants: ["banner"],
@@ -139,7 +139,7 @@ registerBlock({
     const heading = (block.props.heading as string) ?? "Our satisfaction guarantee";
     const body =
       (block.props.body as string) ??
-      "If you are not completely happy with our work, we will make it right — that is our promise to every customer, on every job.";
+      "If you are not completely happy with our work, we will make it right - that is our promise to every customer, on every job.";
     return section(
       <div
         style={{

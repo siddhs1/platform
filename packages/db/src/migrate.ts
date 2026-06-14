@@ -19,10 +19,10 @@ async function main() {
   const sql = postgres(url, { max: 1 });
   const db = drizzle(sql);
 
-  console.log("Applying Drizzle migrations…");
+  console.log("Applying Drizzle migrations...");
   await migrate(db, { migrationsFolder: join(__dirname, "..", "drizzle") });
 
-  console.log("Applying RLS policies…");
+  console.log("Applying RLS policies...");
   const rls = readFileSync(join(__dirname, "rls.sql"), "utf8");
   await sql.unsafe(rls);
 

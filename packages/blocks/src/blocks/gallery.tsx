@@ -1,8 +1,8 @@
 /**
- * Gallery block. Project / portfolio imagery — "here's our work."
- *   masonry   — CSS columns, varied heights for an organic wall (default)
- *   grid      — uniform square tiles
- *   filmstrip — horizontal scroll-snap rail of wide frames
+ * Gallery block. Project / portfolio imagery - "here's our work."
+ *   masonry   - CSS columns, varied heights for an organic wall (default)
+ *   grid      - uniform square tiles
+ *   filmstrip - horizontal scroll-snap rail of wide frames
  *
  * props.images: { src?, alt?, caption? }[]. With no src we render captioned
  * gradient placeholders, so the block previews before a VA adds photos.

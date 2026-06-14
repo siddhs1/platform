@@ -56,8 +56,8 @@ const ROOFING_PROFILE = {
     postalCode: "33611",
   },
   hours: [
-    { label: "Mon–Fri", value: "8 AM – 6 PM" },
-    { label: "Sat", value: "9 AM – 2 PM" },
+    { label: "Mon-Fri", value: "8 AM - 6 PM" },
+    { label: "Sat", value: "9 AM - 2 PM" },
     { label: "Sun", value: "Closed" },
   ],
   licenseNumber: "CCC1330812",
@@ -80,9 +80,9 @@ const DENTAL_PROFILE = {
     postalCode: "27608",
   },
   hours: [
-    { label: "Mon–Thu", value: "8 AM – 5 PM" },
-    { label: "Fri", value: "8 AM – 1 PM" },
-    { label: "Sat–Sun", value: "Closed" },
+    { label: "Mon-Thu", value: "8 AM - 5 PM" },
+    { label: "Fri", value: "8 AM - 1 PM" },
+    { label: "Sat-Sun", value: "Closed" },
   ],
   licenseNumber: "NC-DEN-44915",
   insured: true,
@@ -103,9 +103,9 @@ const BISTRO_PROFILE = {
     postalCode: "78701",
   },
   hours: [
-    { label: "Tue–Thu", value: "5 PM – 10 PM" },
-    { label: "Fri–Sat", value: "5 PM – 11 PM" },
-    { label: "Sun–Mon", value: "Closed" },
+    { label: "Tue-Thu", value: "5 PM - 10 PM" },
+    { label: "Fri-Sat", value: "5 PM - 11 PM" },
+    { label: "Sun-Mon", value: "Closed" },
   ],
   socials: [
     { platform: "instagram", href: "https://instagram.com/oliveandember" },

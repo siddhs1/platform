@@ -29,7 +29,7 @@ function Check({ color = "var(--color-brand)", size = 18 }: { color?: string; si
   );
 }
 
-// ── Lead hero: headline + trust points + inline lead form ─────────────
+// -- Lead hero: headline + trust points + inline lead form -------------
 interface LeadHeroProps {
   heading?: string;
   sub?: string;
@@ -80,13 +80,13 @@ registerBlock({
   },
 });
 
-// ── Process: "what happens next" numbered steps ───────────────────────
+// -- Process: "what happens next" numbered steps -----------------------
 interface Step {
   title: string;
   body: string;
 }
 const STEP_DEFAULTS: Step[] = [
-  { title: "Request your quote", body: "Tell us what you need — call or send the form. It takes about two minutes." },
+  { title: "Request your quote", body: "Tell us what you need - call or send the form. It takes about two minutes." },
   { title: "Get a clear estimate", body: "We assess the work and give you an upfront, written price. No pressure." },
   { title: "We do the work", body: "Our licensed team completes the job on schedule, cleanly and correctly." },
   { title: "Enjoy the results", body: "We walk you through everything and stand behind the work, guaranteed." },
@@ -117,7 +117,7 @@ registerBlock({
   },
 });
 
-// ── Included: what's-included checklist ───────────────────────────────
+// -- Included: what's-included checklist -------------------------------
 const INCLUDED_DEFAULTS: string[] = [
   "Upfront, written pricing",
   "Licensed & insured technicians",

@@ -1,5 +1,5 @@
 /**
- * Lighthouse CI — mobile performance gate for the three seeded demo tenants.
+ * Lighthouse CI - mobile performance gate for the three seeded demo tenants.
  *
  * Lighthouse defaults to a mobile form factor with Moto-G-class CPU + network
  * throttling, which is exactly the Week-2 bar (>=95 mobile). The CI job adds

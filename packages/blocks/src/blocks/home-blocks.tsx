@@ -4,7 +4,7 @@
  * Both self-populate from the business niche/context so they render fully
  * with empty props (the gallery and the page templates rely on this). All
  * colour/spacing comes from the L1 token CSS vars, so they restyle per
- * tenant. Static server output, no motion — AA by construction.
+ * tenant. Static server output, no motion - AA by construction.
  */
 import type { CSSProperties, ReactNode } from "react";
 import { registerBlock } from "../registry";
@@ -35,7 +35,7 @@ function CheckTile(): ReactNode {
   );
 }
 
-// ── Trust bar: a stat/credential strip under the hero ─────────────────
+// -- Trust bar: a stat/credential strip under the hero -----------------
 interface Stat {
   value: string;
   label: string;
@@ -43,7 +43,7 @@ interface Stat {
 const TRUST_DEFAULTS: Stat[] = [
   { value: "20+", label: "Years of experience" },
   { value: "2,500+", label: "Jobs completed" },
-  { value: "4.9★", label: "Average review" },
+  { value: "4.9*", label: "Average review" },
   { value: "Licensed", label: "& fully insured" },
 ];
 
@@ -85,13 +85,13 @@ registerBlock({
   },
 });
 
-// ── Why-us: value-prop / icon-feature grid ────────────────────────────
+// -- Why-us: value-prop / icon-feature grid ----------------------------
 interface Feature {
   title: string;
   body: string;
 }
 const WHYUS_DEFAULTS: Feature[] = [
-  { title: "Upfront pricing", body: "You approve a clear, written quote before any work begins — no surprises." },
+  { title: "Upfront pricing", body: "You approve a clear, written quote before any work begins - no surprises." },
   { title: "On time, every time", body: "We respect your schedule and show up in the window we promise." },
   { title: "Licensed & insured", body: "Fully credentialed and covered, for your protection and peace of mind." },
   { title: "Satisfaction guaranteed", body: "We are not finished until you are happy with the result." },

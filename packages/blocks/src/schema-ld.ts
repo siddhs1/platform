@@ -1,6 +1,6 @@
 /**
  * LocalBusiness / Service JSON-LD. Emitted on every page for local SEO.
- * Generated from tenant data — no per-site hand-authoring.
+ * Generated from tenant data - no per-site hand-authoring.
  */
 export interface BusinessContext {
   name: string;

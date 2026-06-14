@@ -1,5 +1,5 @@
 /**
- * Before / after block — registration + layout.
+ * Before / after block - registration + layout.
  *
  * This module is server-neutral (no "use client"): it can be pulled into
  * the server renderer's module graph and the console preview's alike, so
@@ -9,9 +9,9 @@
  * inserts a client reference at that boundary, so the slider hydrates
  * while the rest of the page stays server-rendered.
  *
- *   slider       — draggable handle wipes between before & after (default)
- *   side-by-side — two labelled panels, no interaction (static, here)
- *   toggle       — a button flips between the two states
+ *   slider       - draggable handle wipes between before & after (default)
+ *   side-by-side - two labelled panels, no interaction (static, here)
+ *   toggle       - a button flips between the two states
  */
 import { registerBlock } from "../registry";
 import type { SiteBlock } from "@platform/db";
@@ -35,7 +35,7 @@ registerBlock({
 
     let body;
     if (block.variant === "side-by-side") {
-      // Static variant — pure server render, no client JS.
+      // Static variant - pure server render, no client JS.
       body = (
         <div
           style={{

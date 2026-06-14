@@ -1,9 +1,9 @@
 /**
  * Resolve a hostname to its published site config.
  *
- * Reads the domains table Ã¢â€ â€™ tenant Ã¢â€ â€™ published site_config. Cached per
+ * Reads the domains table -- --(tm) tenant -- --(tm) published site_config. Cached per
  * hostname and tagged so a publish can bust exactly one tenant's cache
- * via revalidateTag(`tenant:${id}`) Ã¢â‚¬â€ no redeploy needed (ISR).
+ * via revalidateTag(`tenant:${id}`) -- no redeploy needed (ISR).
  */
 import { db, schema } from "@platform/db";
 import { and, eq } from "drizzle-orm";

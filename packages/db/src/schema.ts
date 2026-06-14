@@ -4,10 +4,10 @@
  * Design rules (locked decisions):
  *   - One database, every row carries tenant_id, RLS enforces isolation.
  *   - Customization lives in DATA, not code:
- *       L1 design tokens  â†’ site_configs.tokens
- *       L2 page/blocks    â†’ site_configs.pages
- *       L3 scoped CSS     â†’ site_configs.custom_css (capped)
- *       L4 custom blocks  â†’ site_configs.feature_flags (gates registry blocks)
+ *       L1 design tokens  -- site_configs.tokens
+ *       L2 page/blocks    -- site_configs.pages
+ *       L3 scoped CSS     -- site_configs.custom_css (capped)
+ *       L4 custom blocks  -- site_configs.feature_flags (gates registry blocks)
  *   - draft vs published: two rows per tenant differentiated by `state`,
  *     plus an append-only history of published versions for one-click rollback.
  */
@@ -34,7 +34,7 @@ import type {
   BusinessProfile,
 } from "./types";
 
-// â”€â”€ Enums â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- Enums --
 export const tenantStatus = pgEnum("tenant_status", [
   "prospect",
   "onboarding",
@@ -91,8 +91,8 @@ export const notificationStatus = pgEnum("notification_status", [
   "skipped",
 ]);
 
-// â”€â”€ Tenants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// A client is a row. niche+city is unique â†’ enforces "one client per
+// -- Tenants --
+// A client is a row. niche+city is unique -- enforces "one client per
 // niche per city" at the database level, making the exclusivity promise
 // structurally honest.
 export const tenants = pgTable(
@@ -143,8 +143,8 @@ export const tenants = pgTable(
   })
 );
 
-// â”€â”€ Domains â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Hostname â†’ tenant resolution lives here. The sites-app middleware
+// -- Domains --
+// Hostname -- tenant resolution lives here. The sites-app middleware
 // looks up the incoming host in this table.
 export const domains = pgTable(
   "domains",
@@ -168,7 +168,7 @@ export const domains = pgTable(
   })
 );
 
-// â”€â”€ Site configs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- Site configs --
 // The customization payload. One draft + one published row per tenant
 // for the live editing surface; published rows are also copied into
 // config_versions on each publish for rollback.
@@ -207,7 +207,7 @@ export const siteConfigs = pgTable(
   })
 );
 
-// Append-only history of every published config â†’ one-click rollback.
+// Append-only history of every published config -- one-click rollback.
 export const configVersions = pgTable(
   "config_versions",
   {
@@ -230,7 +230,7 @@ export const configVersions = pgTable(
   })
 );
 
-// â”€â”€ Leads â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- Leads --
 export const leads = pgTable(
   "leads",
   {
@@ -258,8 +258,8 @@ export const leads = pgTable(
   })
 );
 
-// â”€â”€ Change requests â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Paper trail: every change goes queued â†’ ... â†’ published. VA-operable.
+// -- Change requests --
+// Paper trail: every change goes queued -- ... -- published. VA-operable.
 export const changeRequests = pgTable(
   "change_requests",
   {
@@ -280,7 +280,7 @@ export const changeRequests = pgTable(
   })
 );
 
-// â”€â”€ Relations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- Relations --
 export const subscriptions = pgTable(
   "subscriptions",
   {
@@ -379,7 +379,7 @@ export const siteConfigsRelations = relations(siteConfigs, ({ one }) => ({
   }),
 }));
 
-// â”€â”€ Row-Level Security note â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- Row-Level Security note --
 // RLS policies are applied via a SQL migration (see drizzle/ + the
 // rls.sql shipped in this package). Drizzle-kit doesn't emit RLS, so the
 // policy file is applied after the generated migration. Each policy keys

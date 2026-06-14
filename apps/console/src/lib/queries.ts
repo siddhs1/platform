@@ -11,7 +11,7 @@ export type ChangeRequestRow = typeof schema.changeRequests.$inferSelect;
 export type SubscriptionRow = typeof schema.subscriptions.$inferSelect;
 
 /**
- * IMPORTANT — tenant isolation in the console.
+ * IMPORTANT - tenant isolation in the console.
  * Every query below filters explicitly by tenant_id (or intentionally
  * reads across all tenants for operator views). We do NOT depend on
  * Postgres RLS context here: the app talks to Neon over the stateless
@@ -151,7 +151,7 @@ export async function listChangeRequests(
     .orderBy(desc(schema.changeRequests.createdAt));
 }
 
-/* ───────────────────────── mutations ─────────────────────────
+/* ------------------------- mutations -------------------------
  * Writes scope by tenant_id explicitly too. The lead-status update
  * matches on (id AND tenant_id) so a mis-routed id can never touch a
  * different tenant's row. Authorization (operator vs client scope) is
@@ -205,11 +205,11 @@ export async function findTenantBySlug(
   return rows[0] ?? null;
 }
 
-/* ───────────────────── config editing & publishing ─────────────────────
+/* --------------------- config editing & publishing ---------------------
  * The editor edits the draft row; publishing copies a validated config to
  * the published row and appends an immutable version snapshot. Validation
  * happens at the action boundary (via @platform/config); these helpers do
- * the DB work. Not transactional over neon-http — the UNIQUE(tenant,
+ * the DB work. Not transactional over neon-http - the UNIQUE(tenant,
  * version) index guards against duplicate versions under concurrent writes.
  */
 

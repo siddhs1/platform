@@ -79,7 +79,7 @@ export default async function EditorPage({
       {sp.err ? <div className="banner error">{sp.err}</div> : null}
       {sp.saved ? <div className="banner ok">Draft saved.</div> : null}
       {sp.published ? (
-        <div className="banner ok">Published v{sp.published} — now live.</div>
+        <div className="banner ok">Published v{sp.published} - now live.</div>
       ) : null}
       {sp.rolledback ? (
         <div className="banner ok">
@@ -208,7 +208,7 @@ export default async function EditorPage({
                 Save draft
               </button>
               <span className="muted small">
-                Draft v{draft.version} · updated {relativeTime(draft.updatedAt)}
+                Draft v{draft.version} - updated {relativeTime(draft.updatedAt)}
               </span>
             </div>
           </form>
@@ -224,7 +224,7 @@ export default async function EditorPage({
                   <>
                     Live: <strong>v{published.version}</strong>
                     {published.publishedAt
-                      ? ` · ${formatDate(published.publishedAt)}`
+                      ? ` - ${formatDate(published.publishedAt)}`
                       : ""}
                   </>
                 ) : (
@@ -240,7 +240,7 @@ export default async function EditorPage({
               <form action={publishDraft}>
                 <input type="hidden" name="tenantId" value={tenant.id} />
                 <button type="submit" className="btn primary">
-                  Publish draft →
+                  Publish draft
                 </button>
               </form>
             </div>
@@ -285,7 +285,7 @@ export default async function EditorPage({
                           ) : null}
                         </td>
                         <td className="muted">{relativeTime(v.publishedAt)}</td>
-                        <td className="muted small">{v.publishedBy ?? "—"}</td>
+                        <td className="muted small">{v.publishedBy ?? "-"}</td>
                         <td className="num">
                           {isLive ? null : (
                             <form action={rollbackTo}>
@@ -351,14 +351,14 @@ export default async function EditorPage({
         {/* Live preview */}
         <div className="editor-preview">
           <div className="preview-bar">
-            <span className="small muted">Live preview · draft</span>
+            <span className="small muted">Live preview - draft</span>
             <a
               className="ghost-btn small"
               href={previewSrc}
               target="_blank"
               rel="noreferrer"
             >
-              Open ↗
+              Open
             </a>
           </div>
           <iframe className="preview-frame" src={previewSrc} title="Draft preview" />
