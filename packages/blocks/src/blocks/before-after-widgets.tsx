@@ -23,6 +23,7 @@ import { useCallback, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import type { SiteBlock } from "@platform/db";
 import { section, h2, eyebrow } from "./shared";
+import { panelBg, tag, frame } from "./before-after-shared";
 
 export interface BAProps {
   heading?: string;
@@ -31,49 +32,6 @@ export interface BAProps {
   beforeLabel?: string;
   afterLabel?: string;
 }
-
-const panelBase: CSSProperties = {
-  position: "absolute",
-  inset: 0,
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-};
-
-export function panelBg(url: string | undefined, which: "before" | "after"): CSSProperties {
-  if (url) return { ...panelBase, backgroundImage: `url(${JSON.stringify(url)})` };
-  // Placeholder gradients: muted/desaturated for "before", brand for "after".
-  return {
-    ...panelBase,
-    background:
-      which === "before"
-        ? "linear-gradient(135deg, color-mix(in srgb, var(--color-muted) 55%, #888), color-mix(in srgb, var(--color-ink) 30%, #666))"
-        : "linear-gradient(135deg, var(--color-accent), var(--color-brand))",
-  };
-}
-
-export const tag: CSSProperties = {
-  position: "absolute",
-  top: "0.75rem",
-  padding: "0.3rem 0.7rem",
-  borderRadius: "var(--radius)",
-  fontSize: "0.75rem",
-  fontWeight: 700,
-  letterSpacing: "0.04em",
-  textTransform: "uppercase",
-  background: "color-mix(in srgb, var(--color-ink) 78%, transparent)",
-  color: "var(--color-surface)",
-  pointerEvents: "none",
-};
-
-export const frame: CSSProperties = {
-  position: "relative",
-  width: "100%",
-  aspectRatio: "16 / 10",
-  borderRadius: "var(--radius)",
-  overflow: "hidden",
-  marginTop: "1.5rem",
-  userSelect: "none",
-};
 
 export function Slider({ p }: { p: BAProps }) {
   const [pos, setPos] = useState(50); // percent revealed of "after"

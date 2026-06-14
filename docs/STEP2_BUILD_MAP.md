@@ -87,9 +87,9 @@ New -- (each: register in `registry.ts`, add to `BLOCK_VARIANTS`, self-populate 
 - [x] **SEO.sitemap** -- generate `sitemap.xml` + `robots` from authored + generated pages.
 
 ## Phase 5 -- Theme presets surfacing & gallery gating
-- [ ] **THM.gallery** -- `_gallery` renders every block --- variant --- preset, sourced from `presets.ts`.
-- [ ] **THM.gate** -- gate `_gallery` behind operator auth/allowlist before any deploy (currently un-gated TODO).
-- [ ] **THM.applied** -- demo tenants use presets; roofing demo on trust-blue to match the canvas.
+- [x] **THM.gallery** -- `_gallery` renders every block --- variant --- preset, sourced from `presets.ts`.
+- [x] **THM.gate** -- gate `_gallery` behind operator auth/allowlist before any deploy (currently un-gated TODO).
+- [x] **THM.applied** -- demo tenants use presets; roofing demo on trust-blue to match the canvas.
 
 ## Phase 6 -- Acceptance & housekeeping
 - [ ] **ACC.build** -- bare `pnpm typecheck` + `lint` + `build` green (NOT corepack).

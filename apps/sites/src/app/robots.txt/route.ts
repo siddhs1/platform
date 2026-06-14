@@ -17,6 +17,7 @@ export async function GET(req: Request): Promise<Response> {
     "User-agent: *",
     "Allow: /",
     "Disallow: /api/",
+    "Disallow: /internal/",
     `Sitemap: ${origin}/sitemap.xml`,
     "",
   ];
