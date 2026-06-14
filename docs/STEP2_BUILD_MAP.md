@@ -10,7 +10,7 @@
 - **`packages/blocks` is the single renderer** shared by the sites app AND the console live-preview. New blocks/templates flow through `registry.ts` so preview === production.
 - Keep the `fonts.ts` `--f-<slug>` ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Â `FONT_PAIRS var(--f-*)` contract in sync, and the `@platform/config` `BLOCK_VARIANTS` map ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Â `registry.ts` in sync.
 - Don't re-trip the logged `session_fixes` (route folder is `sites` not `_sites`; extensionless relative imports; `decodeURIComponent` the `[host]` param; `next/font` args must be object-literals; create bracketed route dirs via .NET, not PowerShell `New-Item`; delete `.next` before build after moving routes).
-- **Do NOT push** ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â `f263aa6` is already 1 commit ahead of `origin/main`. Commit locally; push only on explicit OK.
+- **Push is authorized** — work on `develop`; `main` = PROD (origin/main). Commit to develop and push freely; merge develop -> main for releases.
 
 ## Design system (from the canvas)
 Trust Blue `#1D4ED8` (brand) Ãƒâ€šÃ‚Â· Action Orange `#EA580C` (accent) Ãƒâ€šÃ‚Â· Ink `#0E1726` Ãƒâ€šÃ‚Â· Hanken Grotesk Ãƒâ€šÃ‚Â· radii 10ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“18px (soft) Ãƒâ€šÃ‚Â· subtle depth Ãƒâ€šÃ‚Â· always-reachable CTA Ãƒâ€šÃ‚Â· WCAG AA. ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ built token-driven, shipped as the **trust-blue** preset.
@@ -25,23 +25,23 @@ Trust Blue `#1D4ED8` (brand) Ãƒâ€šÃ‚Â· Action Orange `#EA580C` (accen
 - [x] **F0.2** Add Hanken pairing(s) to `FONT_PAIRS` in `packages/blocks/src/tokens.ts` (display+body ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ `var(--f-*)` + system fallback).
 - [x] **F0.3** Create `packages/db/src/presets.ts` ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â named `SiteTokens` presets; add **trust-blue** matching the canvas (brand/accent/ink/surface/muted, radius soft, fontPair hanken, buttonStyle).
 - [x] **F0.4** Carry the 3 existing seed themes into `presets.ts`; refactor `seed.ts` + `_gallery` to source themes from it (kill the duplicated inline themes).
-- [ ] **F0.5** Extend `shared.tsx` primitives for chrome (container width, nav link, button variants, focus-visible ring) ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â token-driven, AA.
+- [x] **F0.5** Extend `shared.tsx` primitives for chrome (container width, nav link, button variants, focus-visible ring) ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â token-driven, AA.
 - [x] **F0.6** Define the navigation model: primary menu + services mega (niche-derived) + areas dropdown (`serviceAreas`-derived) + footer columns. Derive from niche/services/areas/pages; minimal configurable top menu in `site_configs` only if needed.
 - [x] **F0.7** `BusinessProfile` type (tagline/phone/email/address/hours/license/insured/socials) in `db/types.ts` + optional `profile` on `ResolvedSite`; `buildSiteNav()` reads it.
 - [x] **F0.8** Persist the profile: `tenants.businessProfile` jsonb column + migration 0004 + resolver select + seed the 3 demos' contact/NAP/hours/license. (A0 chrome renders this data.)
 - [x] **F0.V** Verify: bare `pnpm typecheck` + sites `build` green.
 
 ## Phase 1 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â A0 site chrome / shell (lock the system first)
-- [ ] **A0.1** Shell that wraps the block-rendered `<main>` with header + footer (segment layout under `sites/[host]`); token-driven, CSS-isolated like the rest of sites.
-- [ ] **A0.2** Desktop header: logo/business name, primary nav, phone, "Get a Quote" CTA; sticky, subtle depth.
-- [ ] **A0.3** Services mega-menu (niche services + "View all services") ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â interactive; `'use client'` widget + server-neutral registration (before-after split pattern); keyboard + hover, AA, `prefers-reduced-motion`.
-- [ ] **A0.4** Areas dropdown (`serviceAreas` ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ `/areas/<city>`) ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â interactive, same pattern.
-- [ ] **A0.5** Footer sitemap: Brand/NAP/hours Ãƒâ€šÃ‚Â· Services Ãƒâ€šÃ‚Â· Service Areas Ãƒâ€šÃ‚Â· Company Ãƒâ€šÃ‚Â· Legal (license #, Privacy/Terms/Accessibility). Server-rendered.
-- [ ] **A0.6** Mobile header + slide-in drawer (hamburger ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ nav + CTA), `'use client'`.
-- [ ] **A0.7** Sticky mobile call bar (Call Ãƒâ€šÃ‚Â· Get a Quote), `'use client'`, reveal on scroll, `prefers-reduced-motion`.
-- [ ] **A0.8** Breadcrumbs component + `BreadcrumbList` JSON-LD (interior pages).
-- [ ] **A0.9** Wire chrome into the renderer/layout for all authored + generated pages; keep `_gallery` + `/preview` chrome-isolated.
-- [ ] **A0.V** Verify: 3 demo hosts render with chrome; dropdowns + drawer + call bar work; AA; build green.
+- [x] **A0.1** Shell that wraps the block-rendered `<main>` with header + footer (segment layout under `sites/[host]`); token-driven, CSS-isolated like the rest of sites.
+- [x] **A0.2** Desktop header: logo/business name, primary nav, phone, "Get a Quote" CTA; sticky, subtle depth.
+- [x] **A0.3** Services mega-menu (niche services + "View all services") ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â interactive; `'use client'` widget + server-neutral registration (before-after split pattern); keyboard + hover, AA, `prefers-reduced-motion`.
+- [x] **A0.4** Areas dropdown (`serviceAreas` ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ `/areas/<city>`) ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â interactive, same pattern.
+- [x] **A0.5** Footer sitemap: Brand/NAP/hours Ãƒâ€šÃ‚Â· Services Ãƒâ€šÃ‚Â· Service Areas Ãƒâ€šÃ‚Â· Company Ãƒâ€šÃ‚Â· Legal (license #, Privacy/Terms/Accessibility). Server-rendered.
+- [x] **A0.6** Mobile header + slide-in drawer (hamburger ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ nav + CTA), `'use client'`.
+- [x] **A0.7** Sticky mobile call bar (Call Ãƒâ€šÃ‚Â· Get a Quote), `'use client'`, reveal on scroll, `prefers-reduced-motion`.
+- [x] **A0.8** Breadcrumbs component + `BreadcrumbList` JSON-LD (interior pages).
+- [x] **A0.9** Wire chrome into the renderer/layout for all authored + generated pages; keep `_gallery` + `/preview` chrome-isolated.
+- [x] **A0.V** Verify: 3 demo hosts render with chrome; dropdowns + drawer + call bar work; AA; build green.
 
 ## Phase 2 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â New blocks the designs need
 Reused ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“: hero, services, testimonials, reviews-feed, service-area, before-after, team, faq, gallery, cta-band, contact-form, footer.
