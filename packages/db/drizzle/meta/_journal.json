@@ -29,6 +29,13 @@
       "when": 1781401891192,
       "tag": "0003_curvy_beast",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1781411828450,
+      "tag": "0004_fluffy_sue_storm",
+      "breakpoints": true
     }
   ]
 }

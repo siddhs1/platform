@@ -1,14 +1,14 @@
 /**
  * Resolve a hostname to its published site config.
  *
- * Reads the domains table → tenant → published site_config. Cached per
+ * Reads the domains table Ã¢â€ â€™ tenant Ã¢â€ â€™ published site_config. Cached per
  * hostname and tagged so a publish can bust exactly one tenant's cache
- * via revalidateTag(`tenant:${id}`) — no redeploy needed (ISR).
+ * via revalidateTag(`tenant:${id}`) Ã¢â‚¬â€ no redeploy needed (ISR).
  */
 import { db, schema } from "@platform/db";
 import { and, eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
-import type { SiteTokens, SitePage, FeatureFlags, ServiceArea } from "@platform/db";
+import type { SiteTokens, SitePage, FeatureFlags, ServiceArea, BusinessProfile } from "@platform/db";
 
 export interface ResolvedSite {
   tenantId: string;
@@ -21,6 +21,8 @@ export interface ResolvedSite {
   customCss: string;
   featureFlags: FeatureFlags;
   serviceAreas: ServiceArea[];
+  /** Contact / NAP / hours / license for chrome, from tenants.businessProfile. */
+  profile?: BusinessProfile;
 }
 
 async function loadSite(hostname: string): Promise<ResolvedSite | null> {
@@ -36,6 +38,7 @@ async function loadSite(hostname: string): Promise<ResolvedSite | null> {
       customCss: schema.siteConfigs.customCss,
       featureFlags: schema.siteConfigs.featureFlags,
       serviceAreas: schema.tenants.serviceAreas,
+      profile: schema.tenants.businessProfile,
     })
     .from(schema.domains)
     .innerJoin(

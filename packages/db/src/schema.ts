@@ -1,13 +1,13 @@
 /**
- * Multi-tenant schema — the spine of the whole platform.
+ * Multi-tenant schema - the spine of the whole platform.
  *
  * Design rules (locked decisions):
  *   - One database, every row carries tenant_id, RLS enforces isolation.
  *   - Customization lives in DATA, not code:
- *       L1 design tokens  → site_configs.tokens
- *       L2 page/blocks    → site_configs.pages
- *       L3 scoped CSS     → site_configs.custom_css (capped)
- *       L4 custom blocks  → site_configs.feature_flags (gates registry blocks)
+ *       L1 design tokens  â†’ site_configs.tokens
+ *       L2 page/blocks    â†’ site_configs.pages
+ *       L3 scoped CSS     â†’ site_configs.custom_css (capped)
+ *       L4 custom blocks  â†’ site_configs.feature_flags (gates registry blocks)
  *   - draft vs published: two rows per tenant differentiated by `state`,
  *     plus an append-only history of published versions for one-click rollback.
  */
@@ -31,9 +31,10 @@ import type {
   FeatureFlags,
   ConfigDiff,
   ServiceArea,
+  BusinessProfile,
 } from "./types";
 
-// ── Enums ────────────────────────────────────────────────────────────
+// â”€â”€ Enums â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const tenantStatus = pgEnum("tenant_status", [
   "prospect",
   "onboarding",
@@ -90,8 +91,8 @@ export const notificationStatus = pgEnum("notification_status", [
   "skipped",
 ]);
 
-// ── Tenants ──────────────────────────────────────────────────────────
-// A client is a row. niche+city is unique → enforces "one client per
+// â”€â”€ Tenants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// A client is a row. niche+city is unique â†’ enforces "one client per
 // niche per city" at the database level, making the exclusivity promise
 // structurally honest.
 export const tenants = pgTable(
@@ -106,13 +107,19 @@ export const tenants = pgTable(
     status: tenantStatus("status").notNull().default("onboarding"),
     plan: planTier("plan").notNull().default("growth"),
     stripeCustomerId: text("stripe_customer_id"),
-    // Clerk organization id — links a tenant to its console logins.
+    // Clerk organization id - links a tenant to its console logins.
     clerkOrgId: text("clerk_org_id"),
     // New-lead notification recipients (Phase 1 notifications spine).
     notifyEmail: text("notify_email"),
     notifyPhone: text("notify_phone"),
     notifyEmailEnabled: boolean("notify_email_enabled").notNull().default(true),
     notifySmsEnabled: boolean("notify_sms_enabled").notNull().default(true),
+    // Contact / NAP / hours / licensing rendered in site chrome (header +
+    // footer) and used to enrich LocalBusiness JSON-LD. Defaults to {}.
+    businessProfile: jsonb("business_profile")
+      .$type<BusinessProfile>()
+      .notNull()
+      .default({}),
     // Cities this tenant serves, used to generate /<service>/<city> and
     // /areas/<city> pages from data. Defaults to an empty array.
     serviceAreas: jsonb("service_areas")
@@ -136,8 +143,8 @@ export const tenants = pgTable(
   })
 );
 
-// ── Domains ──────────────────────────────────────────────────────────
-// Hostname → tenant resolution lives here. The sites-app middleware
+// â”€â”€ Domains â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Hostname â†’ tenant resolution lives here. The sites-app middleware
 // looks up the incoming host in this table.
 export const domains = pgTable(
   "domains",
@@ -161,7 +168,7 @@ export const domains = pgTable(
   })
 );
 
-// ── Site configs ─────────────────────────────────────────────────────
+// â”€â”€ Site configs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // The customization payload. One draft + one published row per tenant
 // for the live editing surface; published rows are also copied into
 // config_versions on each publish for rollback.
@@ -173,13 +180,13 @@ export const siteConfigs = pgTable(
       .notNull()
       .references(() => tenants.id, { onDelete: "cascade" }),
     state: configState("state").notNull(),
-    // L1 — design tokens (typed; see types.ts)
+    // L1 - design tokens (typed; see types.ts)
     tokens: jsonb("tokens").$type<SiteTokens>().notNull(),
-    // L2 — pages as ordered arrays of typed blocks
+    // L2 - pages as ordered arrays of typed blocks
     pages: jsonb("pages").$type<SitePage[]>().notNull(),
-    // L3 — scoped per-tenant CSS, size-capped in app validation
+    // L3 - scoped per-tenant CSS, size-capped in app validation
     customCss: text("custom_css").notNull().default(""),
-    // L4 — feature flags gating custom blocks in the shared registry
+    // L4 - feature flags gating custom blocks in the shared registry
     featureFlags: jsonb("feature_flags")
       .$type<FeatureFlags>()
       .notNull()
@@ -200,7 +207,7 @@ export const siteConfigs = pgTable(
   })
 );
 
-// Append-only history of every published config → one-click rollback.
+// Append-only history of every published config â†’ one-click rollback.
 export const configVersions = pgTable(
   "config_versions",
   {
@@ -223,7 +230,7 @@ export const configVersions = pgTable(
   })
 );
 
-// ── Leads ────────────────────────────────────────────────────────────
+// â”€â”€ Leads â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const leads = pgTable(
   "leads",
   {
@@ -251,8 +258,8 @@ export const leads = pgTable(
   })
 );
 
-// ── Change requests ──────────────────────────────────────────────────
-// Paper trail: every change goes queued → ... → published. VA-operable.
+// â”€â”€ Change requests â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Paper trail: every change goes queued â†’ ... â†’ published. VA-operable.
 export const changeRequests = pgTable(
   "change_requests",
   {
@@ -273,7 +280,7 @@ export const changeRequests = pgTable(
   })
 );
 
-// ── Relations ────────────────────────────────────────────────────────
+// â”€â”€ Relations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const subscriptions = pgTable(
   "subscriptions",
   {
@@ -372,7 +379,7 @@ export const siteConfigsRelations = relations(siteConfigs, ({ one }) => ({
   }),
 }));
 
-// ── Row-Level Security note ──────────────────────────────────────────
+// â”€â”€ Row-Level Security note â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // RLS policies are applied via a SQL migration (see drizzle/ + the
 // rls.sql shipped in this package). Drizzle-kit doesn't emit RLS, so the
 // policy file is applied after the generated migration. Each policy keys

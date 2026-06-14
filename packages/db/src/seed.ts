@@ -20,7 +20,8 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { tenants, domains, siteConfigs } from "./schema";
-import type { SiteTokens, SitePage, ServiceArea } from "./types";
+import type { SitePage, ServiceArea, BusinessProfile } from "./types";
+import { slateTradesTokens, tealCareTokens, wineHospitalityTokens } from "./presets";
 
 const url = process.env.DIRECT_URL ?? process.env.DATABASE_URL;
 if (!url) throw new Error("DIRECT_URL or DATABASE_URL must be set");
@@ -34,47 +35,83 @@ const slug = (s: string) =>
   s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
 // -- Three deliberately different token sets ---------------------------
-const ROOFING_TOKENS: SiteTokens = {
-  colors: {
-    brand: "#1F3A5F",
-    accent: "#E8A33D",
-    ink: "#16202B",
-    surface: "#FFFFFF",
-    muted: "#5C6B7A",
-  },
-  fontPair: "archivo-inter",
-  radius: "sharp",
-  buttonStyle: "solid",
-  density: "comfortable",
-};
+const ROOFING_TOKENS = slateTradesTokens;
 
-const DENTAL_TOKENS: SiteTokens = {
-  colors: {
-    brand: "#0E8C8C",
-    accent: "#7FD1C4",
-    ink: "#1A2E2E",
-    surface: "#F7FBFB",
-    muted: "#6B8585",
-  },
-  fontPair: "fraunces-nunito",
-  radius: "pill",
-  buttonStyle: "soft",
-  density: "spacious",
-};
+const DENTAL_TOKENS = tealCareTokens;
 
-const BISTRO_TOKENS: SiteTokens = {
-  colors: {
-    brand: "#7A2E2E",
-    accent: "#D9A441",
-    ink: "#2B1A12",
-    surface: "#FBF6EE",
-    muted: "#8A6F5C",
+const BISTRO_TOKENS = wineHospitalityTokens;
+
+// -- Business profiles (contact / NAP / hours / licensing) -------------
+// Rendered by the site chrome (header phone + CTA, footer sitemap) and
+// used to enrich LocalBusiness JSON-LD. Fake numbers (555 exchange) and
+// reserved .example emails on purpose.
+const ROOFING_PROFILE = {
+  tagline: "Tampa Bay's trusted roofing contractor since 1998.",
+  phone: "(813) 555-0142",
+  email: "hello@summitroofing.example",
+  address: {
+    line1: "4210 W Gandy Blvd",
+    city: "Tampa",
+    state: "FL",
+    postalCode: "33611",
   },
-  fontPair: "playfair-source",
-  radius: "soft",
-  buttonStyle: "outline",
-  density: "comfortable",
-};
+  hours: [
+    { label: "Mon–Fri", value: "8 AM – 6 PM" },
+    { label: "Sat", value: "9 AM – 2 PM" },
+    { label: "Sun", value: "Closed" },
+  ],
+  licenseNumber: "CCC1330812",
+  insured: true,
+  socials: [
+    { platform: "facebook", href: "https://facebook.com/summitroofing" },
+    { platform: "instagram", href: "https://instagram.com/summitroofing" },
+  ],
+} satisfies BusinessProfile;
+
+const DENTAL_PROFILE = {
+  tagline: "Gentle, modern dentistry for the whole family.",
+  phone: "(919) 555-0188",
+  email: "smile@brightsmile.example",
+  address: {
+    line1: "1820 Glenwood Ave",
+    line2: "Suite 210",
+    city: "Raleigh",
+    state: "NC",
+    postalCode: "27608",
+  },
+  hours: [
+    { label: "Mon–Thu", value: "8 AM – 5 PM" },
+    { label: "Fri", value: "8 AM – 1 PM" },
+    { label: "Sat–Sun", value: "Closed" },
+  ],
+  licenseNumber: "NC-DEN-44915",
+  insured: true,
+  socials: [
+    { platform: "facebook", href: "https://facebook.com/brightsmiledental" },
+    { platform: "instagram", href: "https://instagram.com/brightsmiledental" },
+  ],
+} satisfies BusinessProfile;
+
+const BISTRO_PROFILE = {
+  tagline: "Wood-fired Mediterranean plates in the heart of Austin.",
+  phone: "(512) 555-0177",
+  email: "reserve@oliveandember.example",
+  address: {
+    line1: "612 E 6th St",
+    city: "Austin",
+    state: "TX",
+    postalCode: "78701",
+  },
+  hours: [
+    { label: "Tue–Thu", value: "5 PM – 10 PM" },
+    { label: "Fri–Sat", value: "5 PM – 11 PM" },
+    { label: "Sun–Mon", value: "Closed" },
+  ],
+  socials: [
+    { platform: "instagram", href: "https://instagram.com/oliveandember" },
+    { platform: "facebook", href: "https://facebook.com/oliveandember" },
+  ],
+} satisfies BusinessProfile;
 
 function homePage(
   business: string,
@@ -158,6 +195,7 @@ async function main() {
       city: "Tampa",
       state: "FL",
       tokens: ROOFING_TOKENS,
+      businessProfile: ROOFING_PROFILE,
       serviceAreas: [
         { city: "Tampa", state: "FL" },
         { city: "St. Petersburg", state: "FL" },
@@ -172,6 +210,7 @@ async function main() {
       city: "Raleigh",
       state: "NC",
       tokens: DENTAL_TOKENS,
+      businessProfile: DENTAL_PROFILE,
       serviceAreas: [
         { city: "Raleigh", state: "NC" },
         { city: "Durham", state: "NC" },
@@ -186,6 +225,7 @@ async function main() {
       city: "Austin",
       state: "TX",
       tokens: BISTRO_TOKENS,
+      businessProfile: BISTRO_PROFILE,
       serviceAreas: [
         { city: "Austin", state: "TX" },
         { city: "Round Rock", state: "TX" },
@@ -220,6 +260,7 @@ async function main() {
         status: "live",
         plan: "growth",
         serviceAreas: d.serviceAreas,
+        businessProfile: d.businessProfile,
       })
       .onConflictDoUpdate({
         target: tenants.slug,
@@ -231,6 +272,7 @@ async function main() {
           status: "live",
           plan: "growth",
           serviceAreas: d.serviceAreas,
+          businessProfile: d.businessProfile,
           updatedAt: new Date(),
         },
       })

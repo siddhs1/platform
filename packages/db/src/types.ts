@@ -4,7 +4,7 @@
  * Validated at the app boundary with Zod (see packages/config).
  */
 
-// ── L1: design tokens ────────────────────────────────────────────────
+// â”€â”€ L1: design tokens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface SiteTokens {
   colors: {
     brand: string; // primary brand color, hex
@@ -20,7 +20,7 @@ export interface SiteTokens {
   density: "compact" | "comfortable" | "spacious";
 }
 
-// ── L2: pages & blocks ───────────────────────────────────────────────
+// â”€â”€ L2: pages & blocks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // A page is an ordered array of typed blocks. Each block names a type
 // from the registry, a variant, and its props. The renderer maps over
 // this; an unknown type renders nothing (never crashes the site).
@@ -56,12 +56,12 @@ export interface SitePage {
   blocks: SiteBlock[];
 }
 
-// ── L4: feature flags ────────────────────────────────────────────────
-// Gate custom blocks. Flag name → enabled. A block whose type requires a
+// â”€â”€ L4: feature flags â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Gate custom blocks. Flag name â†’ enabled. A block whose type requires a
 // flag only renders when the flag is true for that tenant.
 export type FeatureFlags = Record<string, boolean>;
 
-// ── Change-request diff ──────────────────────────────────────────────
+// â”€â”€ Change-request diff â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface ConfigDiff {
   field: "tokens" | "pages" | "customCss" | "featureFlags";
   before: unknown;
@@ -75,4 +75,38 @@ export interface ConfigDiff {
 export interface ServiceArea {
   city: string;
   state: string;
+}
+
+// -- Business profile (per tenant) -------------------------------------
+// Contact / NAP / hours / licensing shown in site chrome (header + footer)
+// and used to enrich LocalBusiness JSON-LD. All fields optional so chrome
+// degrades gracefully when a tenant has not supplied them yet. Persisted on
+// the tenants table (businessProfile jsonb); see resolve-site + seed.
+export interface BusinessHours {
+  label: string; // e.g. "Mon-Fri", "Sat"
+  value: string; // e.g. "8 AM - 6 PM", "Closed"
+}
+
+export interface BusinessAddress {
+  line1?: string;
+  line2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+}
+
+export interface SocialLink {
+  platform: string; // "facebook" | "instagram" | "x" | "youtube" | ...
+  href: string;
+}
+
+export interface BusinessProfile {
+  tagline?: string;
+  phone?: string; // display form, e.g. "(555) 123-4567"
+  email?: string;
+  address?: BusinessAddress;
+  hours?: BusinessHours[];
+  licenseNumber?: string;
+  insured?: boolean;
+  socials?: SocialLink[];
 }
