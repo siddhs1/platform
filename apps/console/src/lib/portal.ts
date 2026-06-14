@@ -74,8 +74,16 @@ export async function getPortalContext(): Promise<PortalContext | null> {
 
 export async function requirePortal(): Promise<PortalContext> {
   const ctx = await getPortalContext();
-  if (!ctx) redirect("/sign-in");
-  return ctx;
+  if (ctx) return ctx;
+  // No portal context. Distinguish "not signed in" (-> /sign-in) from
+  // "signed in but not linked to a tenant yet" (-> /post-auth, a terminal
+  // page) so an authenticated user is never bounced into a sign-in loop.
+  if (clerkEnabled) {
+    const { auth } = await import("@clerk/nextjs/server");
+    const a = await auth();
+    if (a.userId) redirect("/post-auth");
+  }
+  redirect("/sign-in");
 }
 
 async function findTenantByOrg(orgId: string): Promise<TenantRow | null> {

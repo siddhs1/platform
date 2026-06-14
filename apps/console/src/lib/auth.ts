@@ -14,12 +14,12 @@ export interface Session {
 /**
  * Resolve the current session, or null when unauthenticated.
  *
- * Role model (Week 3, evolving): every authenticated console user is an
- * operator (owner) for now. Once onboarding gives each client tenant its
- * own Clerk org, a user whose active org is a client org will be mapped to
- * "client" (scoped to that one tenant), and owner/staff will be split by
- * role within a dedicated agency ops org. Client scoping is already
- * enforced per-tenant in queries via canAccessTenant().
+ * Role model: operators (the agency team) are marked by publicMetadata.role =
+ * "owner" | "staff" on their Clerk user (set via the Clerk Backend API /
+ * dashboard, never self-service). Any other authenticated user is a client and
+ * is routed to /portal by requireSession(); their per-tenant role lives in the
+ * memberships table (see lib/portal.ts). Per-tenant access is also enforced in
+ * the data layer via canAccessTenant().
  */
 export async function getSession(): Promise<Session | null> {
   if (clerkEnabled) {
@@ -35,7 +35,7 @@ export async function getSession(): Promise<Session | null> {
       userId: a.userId,
       email: user?.primaryEmailAddress?.emailAddress ?? null,
       name,
-      role: roleFromClerk(),
+      role: operatorRoleFromUser(user),
       orgId: a.orgId ?? null,
     };
   }
@@ -53,17 +53,32 @@ export async function getSession(): Promise<Session | null> {
   return null;
 }
 
-function roleFromClerk(): Role {
-  // TODO(onboarding): once the Clerk org structure is finalized, take the
-  // active org id + org role and map client-org users to "client" (scoped
-  // to their one tenant), splitting owner/staff inside the agency ops org.
-  // Until then, every signed-in console user is treated as the owner.
-  return "owner";
+/**
+ * Operator role from the Clerk user's publicMetadata. Only "owner"/"staff"
+ * are operators; anything else is a client, for which we return a non-operator
+ * sentinel ("client_admin") so isOperator() is false and requireSession()
+ * routes them to /portal. The real client role is resolved per-tenant from the
+ * memberships table in lib/portal.ts, never here.
+ */
+function operatorRoleFromUser(
+  user: { publicMetadata?: unknown } | null
+): Role {
+  const meta = (user?.publicMetadata ?? {}) as { role?: unknown };
+  const r = meta.role;
+  if (r === "owner" || r === "staff") return r;
+  return "client_admin";
 }
 
+/**
+ * Gate an operator-console page or action. Unauthenticated visitors go to
+ * /sign-in; authenticated non-operators (clients) are routed to /portal so the
+ * operator console is never shown to a client. The (app) route group layout
+ * calls this, so the whole operator surface is protected in one place.
+ */
 export async function requireSession(): Promise<Session> {
   const session = await getSession();
   if (!session) redirect("/sign-in");
+  if (!isOperator(session.role)) redirect("/portal");
   return session;
 }
 
