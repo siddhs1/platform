@@ -1,5 +1,5 @@
 /**
- * Design tokens → CSS custom properties. Every block reads only from
+ * Design tokens â†’ CSS custom properties. Every block reads only from
  * these variables, so changing a tenant's tokens restyles the whole site
  * with no code change. This is Layer 1 of the customization model.
  */
@@ -12,56 +12,61 @@ import type { SiteTokens } from "@platform/db";
 // variables (with a system fallback so text still renders before the face
 // loads, or if a family is ever removed).
 //
-// CONTRACT: every var(--f-…) below must have a matching next/font instance
+// CONTRACT: every var(--f-â€¦) below must have a matching next/font instance
 // in fonts.ts. Keep the two in sync when adding or removing a pairing.
 export const FONT_PAIRS: Record<
   string,
   { display: string; body: string }
 > = {
-  // sans display + neutral sans — clean, modern, trades/contractor default
+  // sans display + neutral sans - clean, modern, trades/contractor default
   "archivo-inter": {
     display: "var(--f-archivo), system-ui, sans-serif",
     body: "var(--f-inter), system-ui, sans-serif",
   },
-  // warm serif + friendly sans — approachable, good for health/wellness
+  // warm serif + friendly sans - approachable, good for health/wellness
   "fraunces-nunito": {
     display: "var(--f-fraunces), Georgia, serif",
     body: "var(--f-nunito), system-ui, sans-serif",
   },
-  // high-contrast serif + clean sans — elegant, hospitality/boutique
+  // high-contrast serif + clean sans - elegant, hospitality/boutique
   "playfair-source": {
     display: "var(--f-playfair), Georgia, serif",
     body: "var(--f-source), system-ui, sans-serif",
   },
-  // techy geometric display + neutral sans — modern services/tech-leaning
+  // techy geometric display + neutral sans - modern services/tech-leaning
   "space-inter": {
     display: "var(--f-space), system-ui, sans-serif",
     body: "var(--f-inter), system-ui, sans-serif",
   },
-  // readable serif + humanist sans — editorial, professional services
+  // readable serif + humanist sans - editorial, professional services
   "lora-worksans": {
     display: "var(--f-lora), Georgia, serif",
     body: "var(--f-work), system-ui, sans-serif",
   },
-  // expressive grotesque display + neutral sans — distinctive, creative
+  // expressive grotesque display + neutral sans - distinctive, creative
   "bricolage-inter": {
     display: "var(--f-bricolage), system-ui, sans-serif",
     body: "var(--f-inter), system-ui, sans-serif",
   },
-  // literary serif + clean geometric sans — calm, premium services
+  // literary serif + clean geometric sans - calm, premium services
   "spectral-manrope": {
     display: "var(--f-spectral), Georgia, serif",
     body: "var(--f-manrope), system-ui, sans-serif",
   },
-  // rounded geometric display + geometric sans — soft, friendly retail
+  // rounded geometric display + geometric sans - soft, friendly retail
   "sora-dmsans": {
     display: "var(--f-sora), system-ui, sans-serif",
     body: "var(--f-dmsans), system-ui, sans-serif",
   },
-  // editorial display serif + geometric sans — upscale, restaurants/brands
+  // editorial display serif + geometric sans - upscale, restaurants/brands
   "dmserif-dmsans": {
     display: "var(--f-dmserif), Georgia, serif",
     body: "var(--f-dmsans), system-ui, sans-serif",
+  },
+  // Hanken Grotesk in both roles - humanist, friendly, trustworthy (public-site Trust Blue preset).
+  "hanken-hanken": {
+    display: "var(--f-hanken), system-ui, sans-serif",
+    body: "var(--f-hanken), system-ui, sans-serif",
   },
 };
 

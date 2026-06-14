@@ -12,14 +12,14 @@
  * pair is data-driven, so we don't know at build time which two families a
  * given page needs. With preload off, the @font-face rules all ship in CSS
  * but the browser only downloads the families actually referenced by
- * rendered text — i.e. the two in the active tenant's tokens, not all 15.
+ * rendered text - i.e. the two in the active tenant's tokens, not all 15.
  * (display: "swap" + next/font's metric-matched fallback keep CLS/FOUT low.)
  *
- * NOTE: next/font calls must be object literals with literal values — no
+ * NOTE: next/font calls must be object literals with literal values - no
  * spread, no shared variable, no computed args (the loader analyzes them
  * statically). So each call repeats subsets/display/preload verbatim.
  *
- * CONTRACT: the `--f-<slug>` variable names below MUST match the var(--f-…)
+ * CONTRACT: the `--f-<slug>` variable names below MUST match the var(--f-â€¦)
  * references in FONT_PAIRS. Keep the two in sync when adding/removing a pair.
  * Variable fonts take no `weight`; the two static families (Spectral,
  * DM Serif Display) declare explicit weights.
@@ -40,6 +40,7 @@ import {
   Sora,
   DM_Serif_Display,
   DM_Sans,
+  Hanken_Grotesk,
 } from "next/font/google";
 
 const archivo = Archivo({ subsets: ["latin"], display: "swap", preload: false, variable: "--f-archivo" });
@@ -57,6 +58,7 @@ const manrope = Manrope({ subsets: ["latin"], display: "swap", preload: false, v
 const sora = Sora({ subsets: ["latin"], display: "swap", preload: false, variable: "--f-sora" });
 const dmSerif = DM_Serif_Display({ subsets: ["latin"], display: "swap", preload: false, weight: "400", variable: "--f-dmserif" });
 const dmSans = DM_Sans({ subsets: ["latin"], display: "swap", preload: false, variable: "--f-dmsans" });
+const hanken = Hanken_Grotesk({ subsets: ["latin"], display: "swap", preload: false, variable: "--f-hanken" });
 
 /** Space-separated className string defining all `--f-*` vars. Goes on <html>. */
 export const fontVars = [
@@ -75,6 +77,7 @@ export const fontVars = [
   sora,
   dmSerif,
   dmSans,
+  hanken,
 ]
   .map((f) => f.variable)
   .join(" ");

@@ -3,7 +3,7 @@
  * exposes a helper to run queries inside a tenant RLS context.
  *
  * The client is created LAZILY on first use. Importing this module (e.g.
- * during `next build`, which has no DATABASE_URL) must not throw — the
+ * during `next build`, which has no DATABASE_URL) must not throw - the
  * connection (and the DATABASE_URL requirement) is deferred until a query
  * actually runs at request time.
  */
@@ -42,6 +42,7 @@ export const db = new Proxy({} as DrizzleClient, {
 
 export { schema };
 export * from "./types";
+export * from "./presets";
 
 /**
  * Set the tenant context for RLS for the lifetime of the current

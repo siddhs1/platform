@@ -1,5 +1,5 @@
 /**
- * Internal theme gallery — every block × every variant × every seed theme,
+ * Internal theme gallery — every block × every variant × every preset theme,
  * on one screen. Triple duty:
  *   • sales demo  — show a prospect the range without a live tenant
  *   • QA surface  — eyeball every variant after a change
@@ -8,7 +8,7 @@
  * This lives at /_gallery. The underscore prefix makes it a PRIVATE route
  * segment in the App Router, so it is NOT reachable as a tenant hostname
  * path and never collides with the [host] catch-all. It's an internal tool;
- * gate it behind auth/allowlist before any public deploy.
+ * gate it behind auth/allowlist before any public deploy (see THM.gate).
  *
  * It renders blocks straight through the shared registry — the same path
  * the live renderer uses — so if it looks right here, it looks right in
@@ -19,38 +19,36 @@ import {
   tokensToCssVars,
   allBlockDefinitions,
 } from "@platform/blocks";
-import type { SiteTokens, SiteBlock } from "@platform/db";
+import { THEME_PRESETS } from "@platform/db";
+import type { SiteBlock } from "@platform/db";
 
 export const metadata = { title: "Theme gallery (internal)" };
 
-// ── The three seed themes, inlined so the gallery is self-contained and
-//    doesn't need a DB round-trip. Keep in sync with packages/db/seed.ts.
-const THEMES: { label: string; business: { name: string; niche: string; city: string; state: string }; tokens: SiteTokens }[] = [
-  {
-    label: "Roofing — sharp / navy+amber / Archivo",
-    business: { name: "Summit Roofing Co.", niche: "Roofers", city: "Tampa", state: "FL" },
-    tokens: {
-      colors: { brand: "#1F3A5F", accent: "#E8A33D", ink: "#16202B", surface: "#FFFFFF", muted: "#5C6B7A" },
-      fontPair: "archivo-inter", radius: "sharp", buttonStyle: "solid", density: "comfortable",
-    },
-  },
-  {
-    label: "Dental — pill / teal / Fraunces",
-    business: { name: "Bright Smile Dental", niche: "Dentists", city: "Raleigh", state: "NC" },
-    tokens: {
-      colors: { brand: "#0E8C8C", accent: "#7FD1C4", ink: "#1A2E2E", surface: "#F7FBFB", muted: "#6B8585" },
-      fontPair: "fraunces-nunito", radius: "pill", buttonStyle: "soft", density: "spacious",
-    },
-  },
-  {
-    label: "Bistro — soft / wine+gold / Playfair",
-    business: { name: "Olive & Ember", niche: "Restaurants", city: "Austin", state: "TX" },
-    tokens: {
-      colors: { brand: "#7A2E2E", accent: "#D9A441", ink: "#2B1A12", surface: "#FBF6EE", muted: "#8A6F5C" },
-      fontPair: "playfair-source", radius: "soft", buttonStyle: "outline", density: "comfortable",
-    },
-  },
-];
+// Sample businesses paired with each preset so niche-derived and flag-gated
+// blocks render with realistic context. Niches are generative (any label
+// works — see servicesForNiche). The token values come from the shared
+// preset library (packages/db/presets.ts) — the single source of truth — so
+// they are NOT re-inlined here.
+const SAMPLE_BUSINESS: Record<
+  string,
+  { name: string; niche: string; city: string; state: string }
+> = {
+  "trust-blue": { name: "Summit Roofing Co.", niche: "Roofers", city: "Tampa", state: "FL" },
+  "slate-trades": { name: "Apex Plumbing", niche: "Plumbers", city: "Columbus", state: "OH" },
+  "teal-care": { name: "Bright Smile Dental", niche: "Dentists", city: "Raleigh", state: "NC" },
+  "wine-hospitality": { name: "Olive & Ember", niche: "Restaurants", city: "Austin", state: "TX" },
+};
+
+const FALLBACK_BUSINESS = { name: "Acme Local", niche: "Contractors", city: "Denver", state: "CO" };
+
+const THEMES = THEME_PRESETS.map((preset) => {
+  const business = SAMPLE_BUSINESS[preset.id] ?? FALLBACK_BUSINESS;
+  return {
+    label: `${preset.label} · ${business.niche} · ${preset.tokens.radius}/${preset.tokens.fontPair}`,
+    business,
+    tokens: preset.tokens,
+  };
+});
 
 // A neutral feature-flag set that turns on any flag a block might require,
 // so flag-gated blocks still appear in the gallery.
@@ -117,7 +115,7 @@ export default function GalleryPage() {
       ))}
 
       <footer style={{ padding: "2rem 1.5rem 4rem", maxWidth: 1200, margin: "0 auto", color: "#7a7a82", fontSize: "0.85rem" }}>
-        Gate this route behind auth before deploying. Themes mirror packages/db/seed.ts.
+        Gate this route behind auth before deploying. Themes come from the shared preset library (packages/db/presets.ts).
       </footer>
     </main>
   );
