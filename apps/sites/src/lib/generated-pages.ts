@@ -105,7 +105,6 @@ function buildCityHubPage(site: ResolvedSite, area: ServiceArea): RequestedPage 
       block("gen-contact", "contact-form", "split", {
         heading: `Request a quote in ${city}`,
       }),
-      block("gen-footer", "footer", "default", {}),
     ],
   };
 
@@ -176,7 +175,6 @@ function buildMoneyPage(
       block("gen-contact", "contact-form", "split", {
         heading: `Request ${serviceLower} in ${city}`,
       }),
-      block("gen-footer", "footer", "default", {}),
     ],
   };
 

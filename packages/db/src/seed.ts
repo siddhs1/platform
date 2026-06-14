@@ -173,12 +173,6 @@ function homePage(
           variant: "split",
           props: { heading: "Request a quote" },
         },
-        {
-          id: "footer-1",
-          type: "footer",
-          variant: "default",
-          props: {},
-        },
       ],
     },
   ];

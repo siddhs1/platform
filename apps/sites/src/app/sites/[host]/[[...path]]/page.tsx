@@ -15,6 +15,7 @@ import {
   tokensToCssVars,
   localBusinessJsonLd,
 } from "@platform/blocks";
+import { SiteShell } from "../../../../components/chrome/site-chrome";
 
 interface Params {
   host: string;
@@ -86,7 +87,8 @@ export default async function SitePage({
         />
       ))}
 
-      <main>
+      <SiteShell site={site}>
+        <main>
         {page.blocks.map((block) =>
           renderBlock(block, {
             tokens: site.tokens,
@@ -95,6 +97,7 @@ export default async function SitePage({
           })
         )}
       </main>
+      </SiteShell>
     </div>
   );
 }
