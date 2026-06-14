@@ -15,6 +15,13 @@
       "when": 1781368112448,
       "tag": "0001_minor_mikhail_rasputin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1781393676974,
+      "tag": "0002_lying_fantastic_four",
+      "breakpoints": true
     }
   ]
 }

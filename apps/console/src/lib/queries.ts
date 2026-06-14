@@ -8,6 +8,7 @@ import { isOperator } from "./clerk";
 export type TenantRow = typeof schema.tenants.$inferSelect;
 export type LeadRow = typeof schema.leads.$inferSelect;
 export type ChangeRequestRow = typeof schema.changeRequests.$inferSelect;
+export type SubscriptionRow = typeof schema.subscriptions.$inferSelect;
 
 /**
  * IMPORTANT — tenant isolation in the console.
@@ -335,4 +336,87 @@ export async function getTenantHostnames(tenantId: string): Promise<string[]> {
     .from(schema.domains)
     .where(eq(schema.domains.tenantId, tenantId));
   return rows.map((r) => r.hostname);
+}
+
+/* ----------------------------- billing -----------------------------
+ * Stripe customer + subscription bookkeeping for the agency's own
+ * retainers. The webhook is the source of truth for subscription state;
+ * upsert keys on the Stripe subscription id so repeated / out-of-order
+ * events converge. Customer-id writes match on tenant id.
+ */
+
+export interface SubscriptionUpsert {
+  tenantId: string;
+  stripeCustomerId: string;
+  stripeSubscriptionId: string;
+  status: SubscriptionRow["status"];
+  plan: SubscriptionRow["plan"];
+  priceId: string | null;
+  currentPeriodEnd: Date | null;
+  cancelAtPeriodEnd: boolean;
+}
+
+export async function getSubscription(
+  tenantId: string
+): Promise<SubscriptionRow | null> {
+  const rows = await db
+    .select()
+    .from(schema.subscriptions)
+    .where(eq(schema.subscriptions.tenantId, tenantId))
+    .orderBy(desc(schema.subscriptions.createdAt))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function setTenantStripeCustomerId(
+  tenantId: string,
+  stripeCustomerId: string
+): Promise<void> {
+  await db
+    .update(schema.tenants)
+    .set({ stripeCustomerId, updatedAt: new Date() })
+    .where(eq(schema.tenants.id, tenantId));
+}
+
+/** Session-less reverse lookup for webhooks: customer id -> tenant. */
+export async function findTenantByStripeCustomerId(
+  stripeCustomerId: string
+): Promise<TenantRow | null> {
+  const rows = await db
+    .select()
+    .from(schema.tenants)
+    .where(eq(schema.tenants.stripeCustomerId, stripeCustomerId))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function upsertSubscription(
+  input: SubscriptionUpsert
+): Promise<void> {
+  const now = new Date();
+  await db
+    .insert(schema.subscriptions)
+    .values({
+      tenantId: input.tenantId,
+      stripeCustomerId: input.stripeCustomerId,
+      stripeSubscriptionId: input.stripeSubscriptionId,
+      status: input.status,
+      plan: input.plan,
+      priceId: input.priceId,
+      currentPeriodEnd: input.currentPeriodEnd,
+      cancelAtPeriodEnd: input.cancelAtPeriodEnd,
+    })
+    .onConflictDoUpdate({
+      target: schema.subscriptions.stripeSubscriptionId,
+      set: {
+        tenantId: input.tenantId,
+        stripeCustomerId: input.stripeCustomerId,
+        status: input.status,
+        plan: input.plan,
+        priceId: input.priceId,
+        currentPeriodEnd: input.currentPeriodEnd,
+        cancelAtPeriodEnd: input.cancelAtPeriodEnd,
+        updatedAt: now,
+      },
+    });
 }

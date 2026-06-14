@@ -68,6 +68,17 @@ export const changeStatus = pgEnum("change_status", [
   "published",
 ]);
 
+export const subscriptionStatus = pgEnum("subscription_status", [
+  "incomplete",
+  "incomplete_expired",
+  "trialing",
+  "active",
+  "past_due",
+  "canceled",
+  "unpaid",
+  "paused",
+]);
+
 // ── Tenants ──────────────────────────────────────────────────────────
 // A client is a row. niche+city is unique → enforces "one client per
 // niche per city" at the database level, making the exclusivity promise
@@ -247,11 +258,50 @@ export const changeRequests = pgTable(
 );
 
 // ── Relations ────────────────────────────────────────────────────────
+export const subscriptions = pgTable(
+  "subscriptions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => tenants.id, { onDelete: "cascade" }),
+    stripeCustomerId: text("stripe_customer_id").notNull(),
+    stripeSubscriptionId: text("stripe_subscription_id").notNull(),
+    status: subscriptionStatus("status").notNull(),
+    plan: planTier("plan").notNull(),
+    priceId: text("price_id"),
+    currentPeriodEnd: timestamp("current_period_end", { withTimezone: true }),
+    cancelAtPeriodEnd: boolean("cancel_at_period_end")
+      .notNull()
+      .default(false),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => ({
+    stripeSubIdx: uniqueIndex("subscriptions_stripe_sub_id_idx").on(
+      t.stripeSubscriptionId
+    ),
+    tenantIdx: index("subscriptions_tenant_idx").on(t.tenantId),
+  })
+);
+
 export const tenantsRelations = relations(tenants, ({ many }) => ({
   domains: many(domains),
   siteConfigs: many(siteConfigs),
   leads: many(leads),
   changeRequests: many(changeRequests),
+  subscriptions: many(subscriptions),
+}));
+
+export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
+  tenant: one(tenants, {
+    fields: [subscriptions.tenantId],
+    references: [tenants.id],
+  }),
 }));
 
 export const domainsRelations = relations(domains, ({ one }) => ({

@@ -471,6 +471,44 @@ code {
   color: var(--slate);
 }
 
+/* subscription status */
+.sub-active {
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+.sub-trialing {
+  background: var(--info-soft);
+  color: var(--info);
+}
+.sub-past_due {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+.sub-unpaid {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.sub-canceled {
+  background: var(--slate-soft);
+  color: var(--slate);
+}
+.sub-incomplete {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+.sub-incomplete_expired {
+  background: var(--slate-soft);
+  color: var(--slate);
+}
+.sub-paused {
+  background: var(--slate-soft);
+  color: var(--slate);
+}
+.sub-none {
+  background: var(--slate-soft);
+  color: var(--slate);
+}
+
 .pill-count {
   display: inline-grid;
   place-items: center;

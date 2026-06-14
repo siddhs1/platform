@@ -21,11 +21,11 @@ export default function TenantTabs({
   const active = useSelectedLayoutSegment();
   const base = `/tenants/${tenantId}`;
 
-  // Billing tab is added in its commit.
   const tabs: Tab[] = [
     { segment: null, label: "Overview", href: base },
     { segment: "leads", label: "Leads", href: `${base}/leads`, count: newLeads },
     { segment: "editor", label: "Editor", href: `${base}/editor` },
+    { segment: "billing", label: "Billing", href: `${base}/billing` },
   ];
 
   return (

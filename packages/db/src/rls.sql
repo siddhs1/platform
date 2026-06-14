@@ -23,7 +23,8 @@ declare
     'site_configs',
     'config_versions',
     'leads',
-    'change_requests'
+    'change_requests',
+    'subscriptions'
   ];
 begin
   foreach t in array tenant_tables loop
