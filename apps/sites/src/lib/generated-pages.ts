@@ -364,3 +364,54 @@ export function breadcrumbListJsonLd(crumbs: Crumb[], host: string): object | nu
     }),
   };
 }
+
+// -- Sitemap path enumeration ------------------------------------------
+/**
+ * Standard generated pages every tenant gets (single-segment paths that
+ * getPageForRequest dispatches to the page templates).
+ */
+const STANDARD_PATHS = [
+  "/about",
+  "/services",
+  "/areas",
+  "/gallery",
+  "/reviews",
+  "/blog",
+  "/faq",
+  "/contact",
+  "/financing",
+  "/privacy",
+  "/terms",
+  "/accessibility",
+];
+
+/**
+ * All canonical, indexable paths for a tenant: the union of authored pages
+ * and every generated page (standard pages, per-service detail, per-area
+ * hub, and the service x city money pages). Mirrors getPageForRequest so
+ * the sitemap and the renderer never drift. The open-ended /blog/<slug>
+ * scaffold is not enumerable and is intentionally omitted (authored posts,
+ * if any, still come through site.pages).
+ */
+export function enumerateSitePaths(site: ResolvedSite): string[] {
+  const paths = new Set<string>();
+  paths.add("/");
+
+  for (const p of site.pages) paths.add(p.path);
+  for (const p of STANDARD_PATHS) paths.add(p);
+
+  const services = servicesForNiche(site.niche);
+  const areas = site.serviceAreas;
+
+  for (const s of services) paths.add(`/services/${s.slug}`);
+  for (const a of areas) paths.add(`/areas/${slugify(a.city)}`);
+  for (const s of services) {
+    for (const a of areas) {
+      paths.add(`/${s.slug}/${slugify(a.city)}`);
+    }
+  }
+
+  return Array.from(paths).sort((x, y) =>
+    x === "/" ? -1 : y === "/" ? 1 : x.localeCompare(y)
+  );
+}

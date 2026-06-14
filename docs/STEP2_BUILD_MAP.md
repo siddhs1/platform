@@ -77,14 +77,14 @@ New -- (each: register in `registry.ts`, add to `BLOCK_VARIANTS`, self-populate 
 - [x] **PG.seed** -- seed the 3 demo tenants with the full [v1] multi-page site so demos showcase the whole system. (DECISION 2026-06-14: generation chosen over seeding -- the generated page templates already render the full multi-page site for all 3 demos at request time, so no per-tenant authored seeding is needed; a future console "eject to authored" feature could revisit this.)
 
 ## Phase 4 -- Navigation wiring & SEO
-- [ ] **NAV.menu** -- primary menu from pages/config; active state.
-- [ ] **NAV.services-mega** -- from niche services -- -- `/<service>` / `/<service>/<city>`.
-- [ ] **NAV.areas** -- from `serviceAreas` -- -- `/areas/<city>`.
-- [ ] **NAV.footer** -- sitemap columns from the same sources.
-- [ ] **NAV.breadcrumbs** -- interior pages + `BreadcrumbList` JSON-LD.
-- [ ] **SEO.metadata** -- per-template title/description/keywords + canonical.
-- [ ] **SEO.jsonld** -- LocalBusiness (all) -- Service (money) -- FAQPage (faq) -- BreadcrumbList (interior) -- BlogPosting (blog).
-- [ ] **SEO.sitemap** -- generate `sitemap.xml` + `robots` from authored + generated pages.
+- [x] **NAV.menu** -- primary menu from pages/config; active state.
+- [x] **NAV.services-mega** -- from niche services -- -- `/<service>` / `/<service>/<city>`.
+- [x] **NAV.areas** -- from `serviceAreas` -- -- `/areas/<city>`.
+- [x] **NAV.footer** -- sitemap columns from the same sources.
+- [x] **NAV.breadcrumbs** -- interior pages + `BreadcrumbList` JSON-LD.
+- [x] **SEO.metadata** -- per-template title/description/keywords + canonical.
+- [x] **SEO.jsonld** -- LocalBusiness (all) -- Service (money) -- FAQPage (faq) -- BreadcrumbList (interior) -- BlogPosting (blog).
+- [x] **SEO.sitemap** -- generate `sitemap.xml` + `robots` from authored + generated pages.
 
 ## Phase 5 -- Theme presets surfacing & gallery gating
 - [ ] **THM.gallery** -- `_gallery` renders every block --- variant --- preset, sourced from `presets.ts`.
