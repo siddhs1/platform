@@ -141,14 +141,7 @@ function buildMoneyPage(
   const nicheLower = site.niche.toLowerCase();
   const serviceLower = serviceName.toLowerCase();
 
-  // Cross-link siblings: same set of services, all in THIS city.
-  const serviceItems = servicesForNiche(site.niche).map((s) => ({
-    title: s.name,
-    body: s.blurb,
-    href: `/${s.slug}/${citySlug}`,
-  }));
-
-  // Cluster the SAME service across our other cities.
+  // Cluster the SAME service across our other cities (SEO interlinking).
   const sameServiceElsewhere = site.serviceAreas.map((a) => ({
     label: a.city,
     href: `/${serviceSlug}/${slugify(a.city)}`,
@@ -166,28 +159,29 @@ function buildMoneyPage(
       ],
     },
     blocks: [
-      block("gen-hero", "hero", "image-right", {
-        heading: `${serviceName} in ${city}`,
-        sub: `${site.businessName} - licensed, insured ${nicheLower} serving ${city}, ${state}.`,
-        ctaLabel: "Get a free quote",
+      block("gen-lead-hero", "lead-hero", "split", {
+        heading: `${serviceName} in ${city}, ${state}`,
+        sub: `${site.businessName} - licensed, insured ${nicheLower} serving ${city} and nearby. Fast response, upfront pricing.`,
+        ctaLabel: "Get my free quote",
+        formTitle: `Request ${serviceLower} in ${city}`,
       }),
-      block("gen-services", "services", "cards", {
-        heading: `Our ${city} services`,
-        items: serviceItems,
+      block("gen-included", "included", "checklist", {
+        heading: `What your ${serviceLower} includes`,
       }),
-      block("gen-testimonials", "testimonials", "carousel", {
-        heading: `What ${city} customers say`,
+      block("gen-process", "process", "steps", {
+        heading: `How we work in ${city}`,
       }),
-      block("gen-cta", "cta-band", "default", {
-        heading: `Need ${serviceLower} in ${city}?`,
-        ctaLabel: "Call now",
+      block("gen-credentials", "credentials", "badges", {
+        heading: "Licensed, insured, and trusted",
       }),
       block("gen-area", "service-area", "city-list", {
         heading: `${serviceName} in nearby cities`,
         areaLinks: sameServiceElsewhere,
       }),
-      block("gen-contact", "contact-form", "split", {
-        heading: `Request ${serviceLower} in ${city}`,
+      block("gen-guarantee", "guarantee", "banner", {}),
+      block("gen-cta", "cta-band", "default", {
+        heading: `Need ${serviceLower} in ${city}?`,
+        ctaLabel: "Call now",
       }),
     ],
   };

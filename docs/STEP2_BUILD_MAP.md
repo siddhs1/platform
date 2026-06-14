@@ -61,7 +61,7 @@ New -- (each: register in `registry.ts`, add to `BLOCK_VARIANTS`, self-populate 
 - [x] **BLK.legal** -- long-form prose template (A13).
 
 ## Phase 3 -- Page templates (block recipes, seeded into `site_configs.pages`)
-- [ ] **PG.home** (A1) `[v1]` -- hero -- trust-bar -- services -- why-us -- before-after -- reviews -- service-area -- faq -- cta-band.
+- [x] **PG.home** (A1) `[v1]` -- hero -- trust-bar -- services -- why-us -- before-after -- reviews -- service-area -- faq -- cta-band.
 - [x] **PG.about** (A2) `[v1]` -- hero -- story -- stats -- credentials -- team -- guarantee -- cta-band.
 - [x] **PG.services-index** (A3) `[v1]` -- services index + links to money pages.
 - [x] **PG.service-detail** (A4) `[v1]` -- enhance generated money-page template: lead-hero -- included -- process -- service-area(nearby) -- credentials/guarantee -- cta-band; keep Service JSON-LD.
@@ -73,8 +73,8 @@ New -- (each: register in `registry.ts`, add to `BLOCK_VARIANTS`, self-populate 
 - [x] **PG.contact** (A10) `[v1]` -- contact block (form + map + NAP).
 - [ ] **PG.booking** (A11) `[P2]` -- deferred.
 - [x] **PG.financing** (A12) `[v1]` -- financing page.
-- [ ] **PG.legal-404** (A13) `[v1]` -- privacy/terms/accessibility long-form + styled 404.
-- [ ] **PG.seed** -- seed the 3 demo tenants with the full [v1] multi-page site so demos showcase the whole system.
+- [x] **PG.legal-404** (A13) `[v1]` -- privacy/terms/accessibility long-form + styled 404.
+- [x] **PG.seed** -- seed the 3 demo tenants with the full [v1] multi-page site so demos showcase the whole system. (DECISION 2026-06-14: generation chosen over seeding -- the generated page templates already render the full multi-page site for all 3 demos at request time, so no per-tenant authored seeding is needed; a future console "eject to authored" feature could revisit this.)
 
 ## Phase 4 -- Navigation wiring & SEO
 - [ ] **NAV.menu** -- primary menu from pages/config; active state.
