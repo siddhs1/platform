@@ -9,9 +9,9 @@
  *   /<service>/<city>        -> a "service in city" money page
  *
  * Generated pages are rendered with a business context scoped to the
- * TARGET city (so on-page copy reads "… in Orlando", not the HQ city),
+ * TARGET city (so on-page copy reads "... in Orlando", not the HQ city),
  * and money pages also emit a Service JSON-LD for the city. Nothing is
- * persisted — pages are built per request, so adding a service area is
+ * persisted - pages are built per request, so adding a service area is
  * pure data (no migration, no redeploy).
  */
 import type { SitePage, SiteBlock, ServiceArea } from "@platform/db";
@@ -23,6 +23,20 @@ import {
   type BusinessContext,
 } from "@platform/blocks";
 import type { ResolvedSite } from "./resolve-site";
+import {
+  buildAboutPage,
+  buildServicesIndexPage,
+  buildServiceDetailPage,
+  buildAreasHubPage,
+  buildGalleryPage,
+  buildReviewsPage,
+  buildBlogIndexPage,
+  buildBlogPostPage,
+  buildFaqPage,
+  buildContactPage,
+  buildFinancingPage,
+  buildLegalPage,
+} from "./page-templates";
 
 export interface RequestedPage {
   page: SitePage;
@@ -65,7 +79,7 @@ function areaHubLinks(site: ResolvedSite) {
   }));
 }
 
-// ── City hub: /areas/<city> ───────────────────────────────────────────
+// -- City hub: /areas/<city> -------------------------------------------
 function buildCityHubPage(site: ResolvedSite, area: ServiceArea): RequestedPage {
   const { city, state } = area;
   const citySlug = slugify(city);
@@ -81,7 +95,7 @@ function buildCityHubPage(site: ResolvedSite, area: ServiceArea): RequestedPage 
     path: `/areas/${citySlug}`,
     title: `${site.businessName} in ${city}, ${state}`,
     meta: {
-      description: `${site.businessName} — trusted ${nicheLower} serving ${city}, ${state}. Free quotes, licensed and insured.`,
+      description: `${site.businessName} - trusted ${nicheLower} serving ${city}, ${state}. Free quotes, licensed and insured.`,
       keywords: [`${site.niche} ${city}`, `${site.niche} in ${city}`],
     },
     blocks: [
@@ -115,7 +129,7 @@ function buildCityHubPage(site: ResolvedSite, area: ServiceArea): RequestedPage 
   };
 }
 
-// ── Money page: /<service>/<city> ─────────────────────────────────────
+// -- Money page: /<service>/<city> -------------------------------------
 function buildMoneyPage(
   site: ResolvedSite,
   serviceName: string,
@@ -144,7 +158,7 @@ function buildMoneyPage(
     path: `/${serviceSlug}/${citySlug}`,
     title: `${serviceName} in ${city}, ${state} | ${site.businessName}`,
     meta: {
-      description: `${site.businessName} provides ${serviceLower} in ${city}, ${state}. Licensed, insured, and trusted by your neighbors — call for a free quote.`,
+      description: `${site.businessName} provides ${serviceLower} in ${city}, ${state}. Licensed, insured, and trusted by your neighbors - call for a free quote.`,
       keywords: [
         `${serviceName} ${city}`,
         `${serviceName} in ${city}`,
@@ -154,7 +168,7 @@ function buildMoneyPage(
     blocks: [
       block("gen-hero", "hero", "image-right", {
         heading: `${serviceName} in ${city}`,
-        sub: `${site.businessName} — licensed, insured ${nicheLower} serving ${city}, ${state}.`,
+        sub: `${site.businessName} - licensed, insured ${nicheLower} serving ${city}, ${state}.`,
         ctaLabel: "Get a free quote",
       }),
       block("gen-services", "services", "cards", {
@@ -194,7 +208,7 @@ function buildMoneyPage(
 
 /**
  * Resolve a request path to a page: authored first, then generated, then
- * null (→ the route 404s).
+ * null (-> the route 404s).
  */
 export function getPageForRequest(
   site: ResolvedSite,
@@ -206,9 +220,51 @@ export function getPageForRequest(
   }
 
   const segments = requestedPath.split("/").filter(Boolean);
+  // Single-segment standard pages (generated, like the money/area pages).
+  if (segments.length === 1) {
+    switch (segments[0]!) {
+      case "about":
+        return buildAboutPage(site);
+      case "services":
+        return buildServicesIndexPage(site);
+      case "areas":
+        return buildAreasHubPage(site);
+      case "gallery":
+        return buildGalleryPage(site);
+      case "reviews":
+        return buildReviewsPage(site);
+      case "blog":
+        return buildBlogIndexPage(site);
+      case "faq":
+        return buildFaqPage(site);
+      case "contact":
+        return buildContactPage(site);
+      case "financing":
+        return buildFinancingPage(site);
+      case "privacy":
+        return buildLegalPage(site, "privacy");
+      case "terms":
+        return buildLegalPage(site, "terms");
+      case "accessibility":
+        return buildLegalPage(site, "accessibility");
+      default:
+        return null;
+    }
+  }
   if (segments.length !== 2) return null;
 
   const [first, second] = segments as [string, string];
+
+  // /services/<slug> -- service detail/overview
+  if (first === "services") {
+    const svc = findServiceBySlug(site.niche, second);
+    return svc ? buildServiceDetailPage(site, svc) : null;
+  }
+
+  // /blog/<slug> -- post scaffold (any slug renders a generic post)
+  if (first === "blog") {
+    return buildBlogPostPage(site, second);
+  }
 
   // /areas/<city>
   if (first === "areas") {
@@ -227,7 +283,7 @@ export function getPageForRequest(
 }
 
 
-// ── Breadcrumbs ───────────────────────────────────────────────────────
+// -- Breadcrumbs -------------------------------------------------------
 export interface Crumb {
   name: string;
   /** Present only when the level resolves to a real page today. */
@@ -257,28 +313,41 @@ export function buildBreadcrumbs(site: ResolvedSite, path: string): Crumb[] {
   // /areas/<city>
   if (segs.length === 2 && segs[0]! === "areas") {
     const city = areaBySlug(site, segs[1]!)?.city ?? humanizeSlug(segs[1]!);
-    crumbs.push({ name: "Areas" });
+    crumbs.push({ name: "Areas", href: "/areas" });
     crumbs.push({ name: city, href: path });
     return crumbs;
   }
 
-  // /<service>/<city>
+  // /services/<slug>
+  if (segs.length === 2 && segs[0]! === "services") {
+    const svc = findServiceBySlug(site.niche, segs[1]!);
+    crumbs.push({ name: "Services", href: "/services" });
+    crumbs.push({ name: svc?.name ?? humanizeSlug(segs[1]!), href: path });
+    return crumbs;
+  }
+
+  // /blog/<slug>
+  if (segs.length === 2 && segs[0]! === "blog") {
+    crumbs.push({ name: "Blog", href: "/blog" });
+    crumbs.push({ name: humanizeSlug(segs[1]!), href: path });
+    return crumbs;
+  }
+
+  // /<service>/<city> -- money page
   if (segs.length === 2) {
     const service = findServiceBySlug(site.niche, segs[0]!);
     const city = areaBySlug(site, segs[1]!)?.city;
     if (service && city) {
-      crumbs.push({ name: service.name });
+      crumbs.push({ name: "Services", href: "/services" });
+      crumbs.push({ name: service.name, href: `/services/${service.slug}` });
       crumbs.push({ name: city, href: path });
       return crumbs;
     }
   }
 
-  // Generic fallback: humanize each segment; only the leaf links.
+  // Single segment / generic: humanize each segment; each level links to its own path.
   segs.forEach((s, i) => {
-    crumbs.push({
-      name: humanizeSlug(s),
-      href: i === segs.length - 1 ? path : undefined,
-    });
+    crumbs.push({ name: humanizeSlug(s), href: "/" + segs.slice(0, i + 1).join("/") });
   });
   return crumbs;
 }
