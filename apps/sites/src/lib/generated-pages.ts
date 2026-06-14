@@ -225,3 +225,79 @@ export function getPageForRequest(
 
   return null;
 }
+
+
+// ── Breadcrumbs ───────────────────────────────────────────────────────
+export interface Crumb {
+  name: string;
+  /** Present only when the level resolves to a real page today. */
+  href?: string;
+}
+
+function humanizeSlug(slug: string): string {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+/**
+ * Breadcrumb trail for a resolved path. Links only to paths that resolve
+ * today (Home + the current page); section levels that arrive with the
+ * page templates (Phase 3) render as text for now so we never link a 404.
+ * Drives both the visual breadcrumb and the BreadcrumbList JSON-LD.
+ */
+export function buildBreadcrumbs(site: ResolvedSite, path: string): Crumb[] {
+  const segs = path.split("/").filter(Boolean);
+  if (segs.length === 0) return [];
+
+  const crumbs: Crumb[] = [{ name: "Home", href: "/" }];
+
+  // /areas/<city>
+  if (segs.length === 2 && segs[0]! === "areas") {
+    const city = areaBySlug(site, segs[1]!)?.city ?? humanizeSlug(segs[1]!);
+    crumbs.push({ name: "Areas" });
+    crumbs.push({ name: city, href: path });
+    return crumbs;
+  }
+
+  // /<service>/<city>
+  if (segs.length === 2) {
+    const service = findServiceBySlug(site.niche, segs[0]!);
+    const city = areaBySlug(site, segs[1]!)?.city;
+    if (service && city) {
+      crumbs.push({ name: service.name });
+      crumbs.push({ name: city, href: path });
+      return crumbs;
+    }
+  }
+
+  // Generic fallback: humanize each segment; only the leaf links.
+  segs.forEach((s, i) => {
+    crumbs.push({
+      name: humanizeSlug(s),
+      href: i === segs.length - 1 ? path : undefined,
+    });
+  });
+  return crumbs;
+}
+
+/** schema.org BreadcrumbList for the trail (null for home / single crumb). */
+export function breadcrumbListJsonLd(crumbs: Crumb[], host: string): object | null {
+  if (crumbs.length <= 1) return null;
+  const origin = `https://${host}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: crumbs.map((c, i) => {
+      const el: Record<string, unknown> = {
+        "@type": "ListItem",
+        position: i + 1,
+        name: c.name,
+      };
+      if (c.href) el.item = origin + c.href;
+      return el;
+    }),
+  };
+}

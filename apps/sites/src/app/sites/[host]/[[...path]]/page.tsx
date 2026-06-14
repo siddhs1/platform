@@ -9,13 +9,17 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { resolveSite } from "../../../../lib/resolve-site";
-import { getPageForRequest } from "../../../../lib/generated-pages";
+import {
+  getPageForRequest,
+  buildBreadcrumbs,
+  breadcrumbListJsonLd,
+} from "../../../../lib/generated-pages";
 import {
   renderBlock,
   tokensToCssVars,
   localBusinessJsonLd,
 } from "@platform/blocks";
-import { SiteShell } from "../../../../components/chrome/site-chrome";
+import { SiteShell, Breadcrumbs } from "../../../../components/chrome/site-chrome";
 
 interface Params {
   host: string;
@@ -57,6 +61,8 @@ export default async function SitePage({
   const requested = getPageForRequest(site, pathFromSegments(path));
   if (!requested) notFound();
   const { page, blockBusiness, extraJsonLd } = requested;
+  const hostname = decodeURIComponent(host);
+  const crumbs = buildBreadcrumbs(site, page.path);
 
   const cssVars = tokensToCssVars(site.tokens);
 
@@ -71,6 +77,9 @@ export default async function SitePage({
     }),
     ...extraJsonLd,
   ];
+
+  const breadcrumbLd = breadcrumbListJsonLd(crumbs, hostname);
+  if (breadcrumbLd) jsonLd.push(breadcrumbLd);
 
   return (
     <div style={cssVars} data-tenant={site.tenantId}>
@@ -89,6 +98,7 @@ export default async function SitePage({
 
       <SiteShell site={site}>
         <main>
+          <Breadcrumbs crumbs={crumbs} />
         {page.blocks.map((block) =>
           renderBlock(block, {
             tokens: site.tokens,

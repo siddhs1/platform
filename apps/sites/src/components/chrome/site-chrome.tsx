@@ -155,3 +155,39 @@ export function SiteShell({ site, children }: { site: ResolvedSite; children: Re
     </>
   );
 }
+
+
+/**
+ * Breadcrumb bar — rendered by the renderer at the top of <main> on inner
+ * pages. Returns null on the home page (a single crumb). Structurally typed
+ * crumbs ({ name, href? }) so it needs no import from the routing module.
+ */
+export function Breadcrumbs({ crumbs }: { crumbs: { name: string; href?: string }[] }) {
+  if (crumbs.length <= 1) return null;
+  return (
+    <nav
+      aria-label="Breadcrumb"
+      className="pf"
+      style={{
+        background: "color-mix(in srgb, var(--color-ink) 2.5%, var(--color-surface))",
+        borderBottom: "1px solid color-mix(in srgb, var(--color-ink) 6%, var(--color-surface))",
+      }}
+    >
+      <ol style={{ maxWidth: CHROME_MAX, margin: "0 auto", padding: "10px 24px", display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7, listStyle: "none", fontSize: 13 }}>
+        {crumbs.map((c, i) => {
+          const last = i === crumbs.length - 1;
+          return (
+            <li key={i} style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
+              {c.href && !last ? (
+                <a href={c.href} style={{ color: "color-mix(in srgb, var(--color-ink) 58%, var(--color-surface))" }}>{c.name}</a>
+              ) : (
+                <span aria-current={last ? "page" : undefined} style={{ color: last ? "var(--color-ink)" : "color-mix(in srgb, var(--color-ink) 58%, var(--color-surface))", fontWeight: last ? 600 : 400 }}>{c.name}</span>
+              )}
+              {!last && <Icon name="chevron-right" size={13} style={{ color: "color-mix(in srgb, var(--color-ink) 34%, var(--color-surface))", flex: "none" }} />}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+}
