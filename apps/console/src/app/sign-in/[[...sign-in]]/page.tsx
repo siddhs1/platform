@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default function SignInPage() {
   if (!clerkEnabled) {
-    // Dev bypass: no Clerk, but explicitly opted into no-auth — go straight in.
+    // Dev bypass: no Clerk, but explicitly opted into no-auth - go straight in.
     if (devNoAuth) redirect("/");
 
     // No keys and no bypass: explain how to enable access.

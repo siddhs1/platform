@@ -19,7 +19,7 @@
  * spread, no shared variable, no computed args (the loader analyzes them
  * statically). So each call repeats subsets/display/preload verbatim.
  *
- * CONTRACT: the `--f-<slug>` variable names below MUST match the var(--f-â€¦)
+ * CONTRACT: the `--f-<slug>` variable names below MUST match the var(--f---)
  * references in FONT_PAIRS. Keep the two in sync when adding/removing a pair.
  * Variable fonts take no `weight`; the two static families (Spectral,
  * DM Serif Display) declare explicit weights.

@@ -95,7 +95,7 @@ export default async function DashboardPage() {
                       {n > 0 ? (
                         <span className="pill-count">{n}</span>
                       ) : (
-                        <span className="muted">—</span>
+                        <span className="muted">-</span>
                       )}
                     </td>
                   </tr>

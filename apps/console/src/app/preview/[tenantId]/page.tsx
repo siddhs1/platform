@@ -19,7 +19,7 @@ const notice: React.CSSProperties = {
 
 /**
  * Chrome-less live preview of a tenant's DRAFT site config. Rendered through
- * @platform/blocks — the exact renderer the production sites app uses — so
+ * @platform/blocks - the exact renderer the production sites app uses - so
  * what the operator sees here matches what publishing will ship. Lives
  * outside the (app) route group, so it loads neither the console's global
  * stylesheet nor the operator shell; the editor embeds it in an iframe for

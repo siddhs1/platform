@@ -1,5 +1,5 @@
 /**
- * Theme presets — curated, reusable token sets (Layer 1).
+ * Theme presets - curated, reusable token sets (Layer 1).
  *
  * A preset is a SiteTokens value with an id + human label. Presets are the
  * single source of truth for "starter looks": the seed applies them to the
@@ -34,7 +34,7 @@ export const trustBlueTokens: SiteTokens = {
   density: "comfortable",
 };
 
-// Navy + amber, sharp corners — established trades/contractor (roofing demo).
+// Navy + amber, sharp corners - established trades/contractor (roofing demo).
 export const slateTradesTokens: SiteTokens = {
   colors: {
     brand: "#1F3A5F",
@@ -49,7 +49,7 @@ export const slateTradesTokens: SiteTokens = {
   density: "comfortable",
 };
 
-// Teal + rounded, airy — calm and clean for health/wellness (dental demo).
+// Teal + rounded, airy - calm and clean for health/wellness (dental demo).
 export const tealCareTokens: SiteTokens = {
   colors: {
     brand: "#0E8C8C",
@@ -64,7 +64,7 @@ export const tealCareTokens: SiteTokens = {
   density: "spacious",
 };
 
-// Wine + gold, editorial serif — upscale hospitality/boutique (bistro demo).
+// Wine + gold, editorial serif - upscale hospitality/boutique (bistro demo).
 export const wineHospitalityTokens: SiteTokens = {
   colors: {
     brand: "#7A2E2E",
@@ -99,21 +99,21 @@ export const THEME_PRESETS: ThemePreset[] = [
     id: "slate-trades",
     label: "Slate Trades",
     description:
-      "Navy and amber with sharp corners — a solid, established contractor feel.",
+      "Navy and amber with sharp corners - a solid, established contractor feel.",
     tokens: slateTradesTokens,
   },
   {
     id: "teal-care",
     label: "Teal Care",
     description:
-      "Soft teal, rounded, airy — calm and clean for health and wellness.",
+      "Soft teal, rounded, airy - calm and clean for health and wellness.",
     tokens: tealCareTokens,
   },
   {
     id: "wine-hospitality",
     label: "Wine & Gold",
     description:
-      "Editorial serif in wine and gold — upscale hospitality and boutique retail.",
+      "Editorial serif in wine and gold - upscale hospitality and boutique retail.",
     tokens: wineHospitalityTokens,
   },
 ];

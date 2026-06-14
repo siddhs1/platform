@@ -1,8 +1,8 @@
 /**
  * Site navigation model.
  *
- * Derives the chrome's navigation from tenant DATA — the niche service
- * catalog, service areas, the authored page set, and the business profile —
+ * Derives the chrome's navigation from tenant DATA - the niche service
+ * catalog, service areas, the authored page set, and the business profile -
  * so the header, footer, and (later) breadcrumbs all read from one place and
  * stay in sync without hand-authoring. Pure module (no React): the layout in
  * sites/[host] consumes the returned shape; nothing here renders.
@@ -16,10 +16,9 @@
  *   /about /reviews /blog /contact      standard pages (A2/A7/A8/A10)
  *   /privacy /terms /accessibility      legal          (A13)
  *
- * Page-backed links (About/Reviews/Blog/Contact) are surfaced only when the
- * tenant actually has that page authored, so a menu never shows a dead link.
- * Services and areas are derived and shown whenever the underlying data
- * exists.
+ * About/Reviews/Blog/Contact resolve for every tenant via the generated page
+ * templates (see generated-pages.ts), so they are always surfaced. Services
+ * and areas are derived and shown whenever the underlying data exists.
  */
 import { servicesForNiche, slugify } from "@platform/blocks";
 import type { ResolvedSite } from "./resolve-site";
@@ -83,9 +82,8 @@ export interface SiteNav {
   };
 }
 
-// Standard, non-generated pages and their canonical paths. A tenant gets
-// these from the page templates (Phase 3); we surface a link only when the
-// page is actually present on the tenant.
+// Standard pages and their canonical paths. Every tenant gets these via the
+// generated page templates (Phase 3), so they are always surfaced.
 const STANDARD_PAGES = {
   about: { label: "About", href: "/about" },
   reviews: { label: "Reviews", href: "/reviews" },
@@ -102,9 +100,6 @@ const LEGAL_LINKS: NavLink[] = [
   { label: "Accessibility", href: "/accessibility" },
 ];
 
-function hasPage(site: ResolvedSite, href: string): boolean {
-  return site.pages.some((p) => p.path === href);
-}
 
 function serviceLinks(site: ResolvedSite): NavLink[] {
   return servicesForNiche(site.niche).map((s) => ({
@@ -128,7 +123,7 @@ export function buildSiteNav(site: ResolvedSite): SiteNav {
     STANDARD_PAGES.about,
     STANDARD_PAGES.reviews,
     STANDARD_PAGES.blog,
-  ].filter((l) => hasPage(site, l.href));
+  ];
 
   const services: ServicesMenu = {
     label: "Services",
@@ -154,8 +149,8 @@ export function buildSiteNav(site: ResolvedSite): SiteNav {
     STANDARD_PAGES.reviews,
     STANDARD_PAGES.blog,
     STANDARD_PAGES.contact,
-  ].filter((l) => hasPage(site, l.href));
-  if (companyLinks.length) columns.push({ title: "Company", links: companyLinks });
+  ];
+  columns.push({ title: "Company", links: companyLinks });
 
   const footerMeta: FooterMeta = {
     businessName: site.businessName,

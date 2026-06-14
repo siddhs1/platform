@@ -4,7 +4,7 @@
  * Validated at the app boundary with Zod (see packages/config).
  */
 
-// â”€â”€ L1: design tokens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- L1: design tokens --
 export interface SiteTokens {
   colors: {
     brand: string; // primary brand color, hex
@@ -20,7 +20,7 @@ export interface SiteTokens {
   density: "compact" | "comfortable" | "spacious";
 }
 
-// â”€â”€ L2: pages & blocks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- L2: pages & blocks --
 // A page is an ordered array of typed blocks. Each block names a type
 // from the registry, a variant, and its props. The renderer maps over
 // this; an unknown type renders nothing (never crashes the site).
@@ -36,7 +36,21 @@ export type BlockType =
   | "contact-form"
   | "reviews-feed"
   | "gallery"
-  | "footer";
+  | "footer"
+  | "trust-bar"
+  | "why-us"
+  | "story"
+  | "stats"
+  | "credentials"
+  | "guarantee"
+  | "lead-hero"
+  | "process"
+  | "included"
+  | "blog-index"
+  | "blog-post"
+  | "contact"
+  | "financing"
+  | "legal";
 
 export interface SiteBlock {
   id: string; // stable id for reorder/edit
@@ -56,12 +70,12 @@ export interface SitePage {
   blocks: SiteBlock[];
 }
 
-// â”€â”€ L4: feature flags â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Gate custom blocks. Flag name â†’ enabled. A block whose type requires a
+// -- L4: feature flags --
+// Gate custom blocks. Flag name -- enabled. A block whose type requires a
 // flag only renders when the flag is true for that tenant.
 export type FeatureFlags = Record<string, boolean>;
 
-// â”€â”€ Change-request diff â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- Change-request diff --
 export interface ConfigDiff {
   field: "tokens" | "pages" | "customCss" | "featureFlags";
   before: unknown;

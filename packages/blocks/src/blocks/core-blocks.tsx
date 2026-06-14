@@ -8,7 +8,7 @@ import { section, h2, btn } from "./shared";
 // (services.tsx, testimonials.tsx) when they grew to three variants each.
 // This file now holds the smaller, single-purpose blocks.
 
-// ── CTA band ─────────────────────────────────────────────────────────
+// -- CTA band ---------------------------------------------------------
 registerBlock({
   type: "cta-band",
   variants: ["default"],
@@ -26,7 +26,7 @@ registerBlock({
     ),
 });
 
-// ── Contact form ─────────────────────────────────────────────────────
+// -- Contact form -----------------------------------------------------
 // Posts to the public lead-intake API; on the public site this is a
 // plain HTML form (progressive enhancement happens later).
 registerBlock({
@@ -66,7 +66,7 @@ const field: CSSProperties = {
   fontSize: "1rem",
 };
 
-// ── Footer ───────────────────────────────────────────────────────────
+// -- Footer -----------------------------------------------------------
 registerBlock({
   type: "footer",
   variants: ["default"],

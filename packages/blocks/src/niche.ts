@@ -4,7 +4,7 @@
  * so a tenant's service list and its generated /<service>/<city> URLs stay
  * in sync without hand-authoring.
  *
- * Pure module (no React) — safe to import from the sites app's routing
+ * Pure module (no React) - safe to import from the sites app's routing
  * layer as well as from blocks.
  */
 
@@ -34,7 +34,7 @@ export function servicesForNiche(niche: string): ServiceDef[] {
     {
       name: `${singular} repair`,
       blurb:
-        "Fast, reliable fixes that hold up — diagnosed right the first time.",
+        "Fast, reliable fixes that hold up - diagnosed right the first time.",
     },
     {
       name: `${singular} installation`,

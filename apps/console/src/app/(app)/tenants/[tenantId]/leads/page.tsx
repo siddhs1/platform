@@ -112,7 +112,7 @@ export default async function LeadsPage({
                     <div className="lead-contact">
                       <span className="nm">{lead.name || "Unknown"}</span>
                       <span className="ct mono">
-                        {lead.phone || lead.email || "—"}
+                        {lead.phone || lead.email || "-"}
                       </span>
                     </div>
                   </td>

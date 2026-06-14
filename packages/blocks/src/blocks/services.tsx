@@ -1,12 +1,12 @@
 /**
  * Services block. Three variants:
- *   cards     — bordered cards in a responsive grid (default)
- *   list      — single-column rows with a leading rule, scannable
- *   icon-grid — compact tiles with a glyph mark, denser
+ *   cards     - bordered cards in a responsive grid (default)
+ *   list      - single-column rows with a leading rule, scannable
+ *   icon-grid - compact tiles with a glyph mark, denser
  *
  * Items are derived from the tenant's niche (via servicesForNiche, the
  * shared catalog) so the block reads as authored even before a VA edits
- * copy. An item may carry an optional `href` — used by generated city/
+ * copy. An item may carry an optional `href` - used by generated city/
  * service pages to link each service to its /<service>/<city> page.
  * Subtle lift-on-hover; disabled under prefers-reduced-motion.
  */

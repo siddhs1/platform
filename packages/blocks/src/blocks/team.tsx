@@ -1,9 +1,9 @@
 /**
- * Team block. Puts faces to the business — trust signal for local trades
+ * Team block. Puts faces to the business - trust signal for local trades
  * and clinics alike.
- *   grid      — responsive cards with photo/avatar, name, role (default)
- *   rows      — horizontal media rows with a short bio
- *   spotlight — one featured member large, the rest as a small strip
+ *   grid      - responsive cards with photo/avatar, name, role (default)
+ *   rows      - horizontal media rows with a short bio
+ *   spotlight - one featured member large, the rest as a small strip
  *
  * props.members: { name, role, photo?, bio? }[]. When photo is absent we
  * render an initials avatar tinted from brand color, so the block never

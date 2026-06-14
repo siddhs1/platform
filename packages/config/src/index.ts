@@ -24,8 +24,8 @@ export const tokensSchema = z.object({
 
 // Allowed variants per block type. Kept in lockstep with the registry in
 // @platform/blocks (each registerBlock() declares the same list). This
-// package intentionally does NOT import @platform/blocks — config stays a
-// pure, dependency-light validation layer — so the contract is duplicated
+// package intentionally does NOT import @platform/blocks - config stays a
+// pure, dependency-light validation layer - so the contract is duplicated
 // here on purpose. If you add a variant in the registry, add it here too.
 // (A Week 2+ test asserts these two lists match; see blocks/registry.)
 export const BLOCK_VARIANTS = {
@@ -41,6 +41,20 @@ export const BLOCK_VARIANTS = {
   "reviews-feed": ["stars-summary", "cards", "badges"],
   gallery: ["masonry", "grid", "filmstrip"],
   footer: ["default"],
+  "trust-bar": ["stats"],
+  "why-us": ["icon-grid"],
+  story: ["prose"],
+  stats: ["cards"],
+  credentials: ["badges"],
+  guarantee: ["banner"],
+  "lead-hero": ["split"],
+  process: ["steps"],
+  included: ["checklist"],
+  "blog-index": ["grid"],
+  "blog-post": ["default"],
+  contact: ["split"],
+  financing: ["cards"],
+  legal: ["prose"],
 } as const satisfies Record<string, readonly [string, ...string[]]>;
 
 export type BlockTypeName = keyof typeof BLOCK_VARIANTS;
@@ -51,7 +65,7 @@ const blockTypeEnum = z.enum(
 
 // A block is valid when its variant is one of the variants registered for
 // its type. superRefine lets the error point at the variant field with a
-// message naming the allowed set — useful feedback in the console editor.
+// message naming the allowed set - useful feedback in the console editor.
 export const blockSchema = z
   .object({
     id: z.string().min(1),

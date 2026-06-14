@@ -1,11 +1,11 @@
 /**
  * Reviews-feed block. Distinct from testimonials: this one foregrounds the
- * aggregate rating and platform provenance (Google/Yelp/Facebook) — the
+ * aggregate rating and platform provenance (Google/Yelp/Facebook) - the
  * social-proof numbers, not just pull-quotes. Later this is fed by a real
  * reviews integration; for now it renders from props/defaults.
- *   stars-summary — big average rating + count + recent quotes (default)
- *   cards         — individual review cards with platform + date
- *   badges        — compact platform rating badges in a row
+ *   stars-summary - big average rating + count + recent quotes (default)
+ *   cards         - individual review cards with platform + date
+ *   badges        - compact platform rating badges in a row
  *
  * props: { rating, count, platform, items: {author, rating, body, date, platform}[] }
  */
@@ -42,9 +42,9 @@ function StarRow({ n, size = "1rem" }: { n: number; size?: string }) {
   const full = Math.round(n);
   return (
     <span aria-label={`${n} out of 5 stars`} style={{ color: "var(--color-accent)", fontSize: size, letterSpacing: "1px" }}>
-      {"★".repeat(full)}
+      {"*".repeat(full)}
       <span style={{ color: "color-mix(in srgb, var(--color-muted) 40%, transparent)" }}>
-        {"★".repeat(Math.max(0, 5 - full))}
+        {"*".repeat(Math.max(0, 5 - full))}
       </span>
     </span>
   );
@@ -93,7 +93,7 @@ registerBlock({
                 <p style={{ margin: "0.6rem 0 0", color: "var(--color-ink)", lineHeight: 1.5 }}>{r.body}</p>
                 <p style={{ margin: "0.75rem 0 0", color: "var(--color-muted)", fontSize: "0.85rem" }}>
                   {r.author}
-                  {r.date ? ` · ${r.date}` : ""}
+                  {r.date ? ` - ${r.date}` : ""}
                 </p>
               </div>
             ))}
@@ -197,7 +197,7 @@ registerBlock({
             >
               {r.body}
               <footer style={{ color: "var(--color-muted)", fontSize: "0.85rem", marginTop: 4 }}>
-                — {r.author}
+                - {r.author}
                 {r.platform ? `, ${r.platform}` : ""}
               </footer>
             </blockquote>

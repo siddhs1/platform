@@ -1,13 +1,13 @@
 /**
- * Service-area block. Communicates where the business works — important
+ * Service-area block. Communicates where the business works - important
  * for local SEO and for the per-city page strategy in the build plan.
- *   map-pins  — stylized region panel with pinned city labels (default)
- *   city-list — chip grid of served cities
- *   radius    — "X miles around <City>" statement with concentric rings
+ *   map-pins  - stylized region panel with pinned city labels (default)
+ *   city-list - chip grid of served cities
+ *   radius    - "X miles around <City>" statement with concentric rings
  *
  * props.areas is a string[] of city names; falls back to the tenant's
  * home city plus a few generic nearby-area labels so it renders populated.
- * props.areaLinks (optional) is [{label, href}] — when present, the
+ * props.areaLinks (optional) is [{label, href}] - when present, the
  * city-list and map-pins variants render those cities as links (used to
  * wire a homepage to its generated /areas/<city> hub pages, and to
  * interlink the hubs themselves).
@@ -113,7 +113,7 @@ registerBlock({
             <h2 style={h2}>{heading}</h2>
             <p style={lead}>
               We cover roughly <strong style={{ color: "var(--color-ink)" }}>{miles} miles</strong> around{" "}
-              {ctx.business.city}. Not sure if you're in range? Call and ask — we'll tell you straight.
+              {ctx.business.city}. Not sure if you're in range? Call and ask - we'll tell you straight.
             </p>
           </div>
           {/* concentric rings */}
@@ -154,7 +154,7 @@ registerBlock({
       );
     }
 
-    // default: map-pins — abstract region panel with scattered pins
+    // default: map-pins - abstract region panel with scattered pins
     const positions = [
       { top: "22%", left: "30%" },
       { top: "40%", left: "62%" },

@@ -1,17 +1,17 @@
 "use client";
 /**
- * Before / after — interactive widgets (client component).
+ * Before / after - interactive widgets (client component).
  * The flagship interactive block's stateful pieces live here behind
  * "use client"; registration + the static side-by-side variant live in
  * before-after.tsx (server-neutral), so the registry stays out of the
  * client bundle.
- *   slider       — draggable handle wipes between before & after (default)
- *   side-by-side — two labelled panels, no interaction
- *   toggle       — a button flips between the two states
+ *   slider       - draggable handle wipes between before & after (default)
+ *   side-by-side - two labelled panels, no interaction
+ *   toggle       - a button flips between the two states
  *
  * This file is a client component ("use client") because the slider and
  * toggle need state and pointer events. It is still rendered from the
- * server-component renderer via the registry — Next allows a client
+ * server-component renderer via the registry - Next allows a client
  * component as a child of a server component. The block is self-contained
  * and reads only from CSS variables, so it themes per tenant like the rest.
  *
@@ -162,7 +162,7 @@ export function Slider({ p }: { p: BAProps }) {
             fontSize: "0.9rem",
           }}
         >
-          ⟷
+          {"<->"}
         </span>
       </div>
     </div>

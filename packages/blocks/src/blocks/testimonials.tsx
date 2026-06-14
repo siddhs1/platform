@@ -1,8 +1,8 @@
 /**
  * Testimonials block. Three variants:
- *   carousel     — horizontal scroll-snap rail, swipeable on touch (default)
- *   wall         — multi-column grid of quote cards
- *   single-quote — one large featured pull-quote
+ *   carousel     - horizontal scroll-snap rail, swipeable on touch (default)
+ *   wall         - multi-column grid of quote cards
+ *   single-quote - one large featured pull-quote
  *
  * Quotes come from props.items when present, else a small built-in set
  * so a freshly seeded site still looks populated.
@@ -45,7 +45,7 @@ const DEFAULT_QUOTES: Quote[] = [
 function Stars() {
   return (
     <div aria-label="5 out of 5 stars" style={{ color: "var(--color-accent)", letterSpacing: "2px" }}>
-      {"★★★★★"}
+      {"*****"}
     </div>
   );
 }
@@ -133,7 +133,7 @@ registerBlock({
               margin: "1rem 0 0",
             }}
           >
-            “{q.body}”
+            "{q.body}"
           </blockquote>
           <Attribution q={q} />
         </div>,
@@ -141,7 +141,7 @@ registerBlock({
       );
     }
 
-    // default: carousel — CSS scroll-snap rail
+    // default: carousel - CSS scroll-snap rail
     const railId = "tst-rail";
     const railCss = `
 .${railId} { scrollbar-width: thin; }

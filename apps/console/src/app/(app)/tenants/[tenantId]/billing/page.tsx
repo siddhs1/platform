@@ -58,11 +58,11 @@ export default async function BillingPage({
       {sp.err ? <div className="banner error">{sp.err}</div> : null}
       {sp.started ? (
         <div className="banner ok">
-          Subscription started — it can take a moment to activate.
+          Subscription started - it can take a moment to activate.
         </div>
       ) : null}
       {sp.canceled ? (
-        <div className="banner">Checkout canceled — no charge was made.</div>
+        <div className="banner">Checkout canceled - no charge was made.</div>
       ) : null}
 
       {!stripeEnabled ? (
@@ -96,7 +96,7 @@ export default async function BillingPage({
               </div>
               <div className="kv">
                 <dt>{periodLabel}</dt>
-                <dd>{periodEnd ? formatDate(periodEnd) : "—"}</dd>
+                <dd>{periodEnd ? formatDate(periodEnd) : "-"}</dd>
               </div>
               <div className="kv">
                 <dt>Stripe customer</dt>
@@ -106,7 +106,7 @@ export default async function BillingPage({
                       {tenant.stripeCustomerId}
                     </span>
                   ) : (
-                    <span className="muted">—</span>
+                    <span className="muted">-</span>
                   )}
                 </dd>
               </div>
@@ -140,7 +140,7 @@ export default async function BillingPage({
                   return (
                     <option key={plan} value={plan} disabled={!configured}>
                       {planLabel(plan)}
-                      {configured ? "" : " — no price configured"}
+                      {configured ? "" : " - no price configured"}
                     </option>
                   );
                 })}
@@ -157,7 +157,7 @@ export default async function BillingPage({
               className="btn primary"
               disabled={!stripeEnabled}
             >
-              Start checkout →
+              Start checkout
             </button>
           </div>
         </form>
@@ -182,7 +182,7 @@ export default async function BillingPage({
               className="btn"
               disabled={!stripeEnabled || !hasCustomer}
             >
-              Open billing portal ↗
+              Open billing portal
             </button>
           </form>
         </div>

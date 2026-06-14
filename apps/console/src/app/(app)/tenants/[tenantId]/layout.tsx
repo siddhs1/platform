@@ -36,11 +36,11 @@ export default async function TenantLayout({
           <h1>{tenant.businessName}</h1>
           <div className="tenant-meta">
             <span>{humanize(tenant.niche)}</span>
-            <span className="dot">·</span>
+            <span className="dot">-</span>
             <span>
               {tenant.city}, {tenant.state}
             </span>
-            <span className="dot">·</span>
+            <span className="dot">-</span>
             <span className="mono small">{tenant.slug}</span>
           </div>
         </div>
