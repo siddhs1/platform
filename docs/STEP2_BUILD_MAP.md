@@ -92,10 +92,10 @@ New -- (each: register in `registry.ts`, add to `BLOCK_VARIANTS`, self-populate 
 - [x] **THM.applied** -- demo tenants use presets; roofing demo on trust-blue to match the canvas.
 
 ## Phase 6 -- Acceptance & housekeeping
-- [ ] **ACC.build** -- bare `pnpm typecheck` + `lint` + `build` green (NOT corepack).
-- [ ] **ACC.routes** -- every `[v1]` route 200s with chrome + correct JSON-LD; bogus -- -- 404 (via `next start` + Host-header curls).
+- [x] **ACC.build** -- bare `pnpm typecheck` + `lint` + `build` green (NOT corepack).
+- [x] **ACC.routes** -- every `[v1]` route 200s with chrome + correct JSON-LD; bogus -- -- 404 (via `next start` + Host-header curls).
 - [ ] **ACC.lighthouse** -- perf -- 95 mobile still passes on demo hosts (chrome adds weight -- verify via the CI lighthouse job).
-- [ ] **ACC.a11y** -- keyboard nav, focus-visible, AA contrast, reduced-motion; mobile drawer/call bar.
-- [ ] **HK.docs** -- commit `docs/` (PRD, WIREFRAMES, this map) -- currently untracked.
-- [ ] **HK.memory** -- update `memory.db` `build_status`/`next_steps` to reflect Step 2 progress.
-- [ ] **HK.commit** -- commit in logical chunks (chrome / blocks / templates / nav+seo / presets+gallery). Push only on explicit OK.
+- [x] **ACC.a11y** -- keyboard nav, focus-visible, AA contrast, reduced-motion; mobile drawer/call bar.
+- [x] **HK.docs** -- commit `docs/` (PRD, WIREFRAMES, this map) -- currently untracked.
+- [x] **HK.memory** -- update `memory.db` `build_status`/`next_steps` to reflect Step 2 progress.
+- [x] **HK.commit** -- commit in logical chunks (chrome / blocks / templates / nav+seo / presets+gallery). Push only on explicit OK.
