@@ -9,7 +9,7 @@ config({ path: join(__dirname, "../../.env") });
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@platform/db", "@platform/blocks", "@platform/config"],
+  transpilePackages: ["@platform/db", "@platform/blocks", "@platform/config", "@platform/notify"],
 };
 
 export default nextConfig;

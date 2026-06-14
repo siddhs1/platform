@@ -177,15 +177,19 @@ export async function createCallLead(input: {
   name?: string | null;
   phone?: string | null;
   callSid?: string | null;
-}): Promise<void> {
-  await db.insert(schema.leads).values({
-    tenantId: input.tenantId,
-    source: "call",
-    name: input.name ?? null,
-    phone: input.phone ?? null,
-    message: "Inbound phone call",
-    twilioCallSid: input.callSid ?? null,
-  });
+}): Promise<string | null> {
+  const [row] = await db
+    .insert(schema.leads)
+    .values({
+      tenantId: input.tenantId,
+      source: "call",
+      name: input.name ?? null,
+      phone: input.phone ?? null,
+      message: "Inbound phone call",
+      twilioCallSid: input.callSid ?? null,
+    })
+    .returning({ id: schema.leads.id });
+  return row?.id ?? null;
 }
 
 /** Session-less tenant lookup by slug, for public webhooks (e.g. Twilio).

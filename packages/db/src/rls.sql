@@ -24,7 +24,8 @@ declare
     'config_versions',
     'leads',
     'change_requests',
-    'subscriptions'
+    'subscriptions',
+    'notifications'
   ];
 begin
   foreach t in array tenant_tables loop

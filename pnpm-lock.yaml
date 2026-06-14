@@ -38,6 +38,9 @@ importers:
       '@platform/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@platform/notify':
+        specifier: workspace:*
+        version: link:../../packages/notify
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
@@ -87,6 +90,9 @@ importers:
       '@platform/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@platform/notify':
+        specifier: workspace:*
+        version: link:../../packages/notify
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
@@ -163,6 +169,12 @@ importers:
       tsx:
         specifier: ^4.19.1
         version: 4.22.4
+      typescript:
+        specifier: ^5.6.2
+        version: 5.9.3
+
+  packages/notify:
+    devDependencies:
       typescript:
         specifier: ^5.6.2
         version: 5.9.3

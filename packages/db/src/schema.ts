@@ -79,6 +79,17 @@ export const subscriptionStatus = pgEnum("subscription_status", [
   "paused",
 ]);
 
+export const notificationChannel = pgEnum("notification_channel", [
+  "email",
+  "sms",
+]);
+
+export const notificationStatus = pgEnum("notification_status", [
+  "sent",
+  "failed",
+  "skipped",
+]);
+
 // ── Tenants ──────────────────────────────────────────────────────────
 // A client is a row. niche+city is unique → enforces "one client per
 // niche per city" at the database level, making the exclusivity promise
@@ -97,6 +108,11 @@ export const tenants = pgTable(
     stripeCustomerId: text("stripe_customer_id"),
     // Clerk organization id — links a tenant to its console logins.
     clerkOrgId: text("clerk_org_id"),
+    // New-lead notification recipients (Phase 1 notifications spine).
+    notifyEmail: text("notify_email"),
+    notifyPhone: text("notify_phone"),
+    notifyEmailEnabled: boolean("notify_email_enabled").notNull().default(true),
+    notifySmsEnabled: boolean("notify_sms_enabled").notNull().default(true),
     // Cities this tenant serves, used to generate /<service>/<city> and
     // /areas/<city> pages from data. Defaults to an empty array.
     serviceAreas: jsonb("service_areas")
@@ -295,12 +311,50 @@ export const tenantsRelations = relations(tenants, ({ many }) => ({
   leads: many(leads),
   changeRequests: many(changeRequests),
   subscriptions: many(subscriptions),
+  notifications: many(notifications),
 }));
 
 export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
   tenant: one(tenants, {
     fields: [subscriptions.tenantId],
     references: [tenants.id],
+  }),
+}));
+
+// Delivery log for transactional notifications (new-lead alerts, etc.).
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => tenants.id, { onDelete: "cascade" }),
+    leadId: uuid("lead_id").references(() => leads.id, {
+      onDelete: "set null",
+    }),
+    channel: notificationChannel("channel").notNull(),
+    recipient: text("recipient").notNull(),
+    status: notificationStatus("status").notNull(),
+    error: text("error"),
+    providerId: text("provider_id"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => ({
+    tenantIdx: index("notifications_tenant_idx").on(t.tenantId),
+    leadIdx: index("notifications_lead_idx").on(t.leadId),
+  })
+);
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  tenant: one(tenants, {
+    fields: [notifications.tenantId],
+    references: [tenants.id],
+  }),
+  lead: one(leads, {
+    fields: [notifications.leadId],
+    references: [leads.id],
   }),
 }));
 
