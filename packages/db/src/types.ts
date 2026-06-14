@@ -42,7 +42,10 @@ export type BlockType =
   | "story"
   | "stats"
   | "credentials"
-  | "guarantee";
+  | "guarantee"
+  | "lead-hero"
+  | "process"
+  | "included";
 
 export interface SiteBlock {
   id: string; // stable id for reorder/edit

@@ -18,6 +18,7 @@ import "./blocks/reviews-feed";
 import "./blocks/gallery";
 import "./blocks/home-blocks";
 import "./blocks/about-blocks";
+import "./blocks/money-blocks";
 
 export {
   renderBlock,
