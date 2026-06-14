@@ -50,6 +50,11 @@ export const BLOCK_VARIANTS = {
   "lead-hero": ["split"],
   process: ["steps"],
   included: ["checklist"],
+  "blog-index": ["grid"],
+  "blog-post": ["default"],
+  contact: ["split"],
+  financing: ["cards"],
+  legal: ["prose"],
 } as const satisfies Record<string, readonly [string, ...string[]]>;
 
 export type BlockTypeName = keyof typeof BLOCK_VARIANTS;

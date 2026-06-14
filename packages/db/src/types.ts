@@ -45,7 +45,12 @@ export type BlockType =
   | "guarantee"
   | "lead-hero"
   | "process"
-  | "included";
+  | "included"
+  | "blog-index"
+  | "blog-post"
+  | "contact"
+  | "financing"
+  | "legal";
 
 export interface SiteBlock {
   id: string; // stable id for reorder/edit
