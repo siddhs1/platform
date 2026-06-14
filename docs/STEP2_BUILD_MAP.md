@@ -94,7 +94,7 @@ New -- (each: register in `registry.ts`, add to `BLOCK_VARIANTS`, self-populate 
 ## Phase 6 -- Acceptance & housekeeping
 - [x] **ACC.build** -- bare `pnpm typecheck` + `lint` + `build` green (NOT corepack).
 - [x] **ACC.routes** -- every `[v1]` route 200s with chrome + correct JSON-LD; bogus -- -- 404 (via `next start` + Host-header curls).
-- [ ] **ACC.lighthouse** -- perf -- 95 mobile still passes on demo hosts (chrome adds weight -- verify via the CI lighthouse job).
+- [x] **ACC.lighthouse** -- perf -- 95 mobile still passes on demo hosts (chrome adds weight -- verify via the CI lighthouse job).
 - [x] **ACC.a11y** -- keyboard nav, focus-visible, AA contrast, reduced-motion; mobile drawer/call bar.
 - [x] **HK.docs** -- commit `docs/` (PRD, WIREFRAMES, this map) -- currently untracked.
 - [x] **HK.memory** -- update `memory.db` `build_status`/`next_steps` to reflect Step 2 progress.
