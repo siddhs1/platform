@@ -67,10 +67,10 @@ registerBlock({
           <div id="contact" style={{ background: "var(--color-surface)", borderRadius: "var(--radius)", padding: "calc(1.75rem * var(--density))", boxShadow: "0 24px 60px -28px rgba(0,0,0,.55)" }}>
             <h2 style={{ ...h2, fontSize: "1.3rem", margin: "0 0 1rem" }}>{formTitle}</h2>
             <form method="post" action={`/api/lead?tenant=${ctx.business.name}`} style={{ display: "grid", gap: "0.8rem" }}>
-              <input name="name" placeholder="Your name" required style={field} />
-              <input name="phone" placeholder="Phone" required style={field} />
-              <input name="email" type="email" placeholder="Email" style={field} />
-              <textarea name="message" placeholder="Briefly, what do you need?" rows={3} style={field} />
+              <input name="name" aria-label="Your name" placeholder="Your name" required style={field} />
+              <input name="phone" aria-label="Phone" placeholder="Phone" required style={field} />
+              <input name="email" type="email" aria-label="Email" placeholder="Email" style={field} />
+              <textarea name="message" aria-label="Briefly, what do you need?" placeholder="Briefly, what do you need?" rows={3} style={field} />
               <button type="submit" style={{ ...btn, background: "var(--color-accent)" }}>{ctaLabel}</button>
             </form>
           </div>

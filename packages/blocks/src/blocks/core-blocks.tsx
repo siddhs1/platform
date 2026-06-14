@@ -46,10 +46,10 @@ registerBlock({
             marginTop: "1.25rem",
           }}
         >
-          <input name="name" placeholder="Your name" required style={field} />
-          <input name="phone" placeholder="Phone" required style={field} />
-          <input name="email" type="email" placeholder="Email" style={field} />
-          <textarea name="message" placeholder="How can we help?" rows={4} style={field} />
+          <input name="name" aria-label="Your name" placeholder="Your name" required style={field} />
+          <input name="phone" aria-label="Phone" placeholder="Phone" required style={field} />
+          <input name="email" type="email" aria-label="Email" placeholder="Email" style={field} />
+          <textarea name="message" aria-label="How can we help?" placeholder="How can we help?" rows={4} style={field} />
           <button type="submit" style={btn}>
             Request a quote
           </button>

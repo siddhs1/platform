@@ -63,10 +63,10 @@ registerBlock({
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "2rem", marginTop: "1.5rem" }}>
           <div id="contact">
             <form method="post" action={`/api/lead?tenant=${ctx.business.name}`} style={{ display: "grid", gap: "0.8rem", maxWidth: 480 }}>
-              <input name="name" placeholder="Your name" required style={field} />
-              <input name="phone" placeholder="Phone" required style={field} />
-              <input name="email" type="email" placeholder="Email" style={field} />
-              <textarea name="message" placeholder="How can we help?" rows={4} style={field} />
+              <input name="name" aria-label="Your name" placeholder="Your name" required style={field} />
+              <input name="phone" aria-label="Phone" placeholder="Phone" required style={field} />
+              <input name="email" type="email" aria-label="Email" placeholder="Email" style={field} />
+              <textarea name="message" aria-label="How can we help?" placeholder="How can we help?" rows={4} style={field} />
               <button type="submit" style={btn}>Request a quote</button>
             </form>
           </div>
