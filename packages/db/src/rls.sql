@@ -1,4 +1,4 @@
--- ─────────────────────────────────────────────────────────────────────
+-- ---------------------------------------------------------------------
 -- Row-Level Security
 -- Applied AFTER the drizzle-generated migration. drizzle-kit does not
 -- emit RLS, so this runs as a follow-up step (migrate.ts applies it).
@@ -7,7 +7,7 @@
 -- current_setting('app.tenant_id'), which the console sets per request
 -- via setTenantContext(). Reads with no context return nothing, which
 -- is the safe default.
--- ─────────────────────────────────────────────────────────────────────
+-- ---------------------------------------------------------------------
 
 -- Helper: read the current tenant from the connection setting.
 create or replace function app_current_tenant() returns uuid as $$
@@ -25,7 +25,8 @@ declare
     'leads',
     'change_requests',
     'subscriptions',
-    'notifications'
+    'notifications',
+    'memberships'
   ];
 begin
   foreach t in array tenant_tables loop

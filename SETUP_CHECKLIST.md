@@ -19,7 +19,7 @@ at the repo root) unless stated otherwise.
 ---
 
 ## 0. Approvals -- actions Claude will not take on its own
-- [x] `[SET]` **Git push is authorized.** Claude pushes freely. Branch model: `develop` = active work, `main` = PROD; both at `e312846` (pushed). Work lands on `develop`; a `develop` -> `main` merge is a release. CI runs typecheck/lint/build + a Lighthouse audit (needs the DB secrets in section 5).
+- [ ] `[APPROVAL]` **Git push / merge to main.** Claude commits locally on `develop` and pushes only on your explicit go-ahead. Branch model: `develop` = active work, `main` = PROD; both currently in sync at the latest `develop` commit (see `memory.db` `head_commit`). A `develop` -> `main` merge is a release. CI runs typecheck/lint/build + a Lighthouse audit (needs the DB secrets in section 5).
 - [ ] `[APPROVAL]` **Any payment or paid signup** (domain purchase, paid plan upgrades, phone-number purchase, etc.). Claude will tell you what to buy; you do the transaction.
 - [ ] `[APPROVAL]` **Production deploys / DNS cutover.** Claude prepares everything; you trigger the actual go-live.
 
@@ -30,7 +30,9 @@ at the repo root) unless stated otherwise.
 ## 2. Console authentication -- Clerk
 - [ ] `[DEV-STUB]` Local dev runs with `CONSOLE_DEV_NO_AUTH=1` (stub owner session) so console features work without Clerk. This must be **empty/unset in any deployed environment.**
 - [ ] `[NEEDED]` Create a Clerk application and set **`CLERK_SECRET_KEY`** + **`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`**. Without these the console degrades (no real auth).
-- [ ] `[LATER]` **Clerk Organizations** (one org per tenant; `client_admin` / `client_staff` roles) -- required for the tenant (client) console in Step 3.
+- [ ] `[NEEDED]` **Clerk Organizations** (one org per tenant; `client_admin` / `client_staff` roles) -- powers the tenant (client) console (Step 3, now in progress). Schema is ready: `memberships` table + `member_role` enum (migration 0005); a tenant's `clerk_org_id` links it to its org. Until Clerk keys exist, the portal runs via the dev bypass below.
+- [ ] `[DEV-STUB]` Portal dev bypass: `CONSOLE_DEV_NO_AUTH=1` plus optional **`CONSOLE_DEV_PORTAL_SLUG`** (defaults to the oldest tenant) bind the client portal to one tenant as `client_admin` for local work. Must be empty/unset in any deployed environment.
+- [ ] `[NEEDED]` **Client invitations + post-sign-in routing.** Once Clerk keys exist: invite client users into their tenant's org (writes a `memberships` row), and route operators to `/` vs clients to `/portal` after sign-in (Clerk afterSignIn/redirect). Operator impersonation of a tenant should be audited (Step 5 / `audit_log`).
 
 ## 3. Billing -- Stripe (agency's own retainers)
 - [ ] `[NEEDED]` Create a Stripe account; set **`STRIPE_SECRET_KEY`**. Without it the billing page shows a "not configured" notice and the webhook returns 400 (by design).
@@ -71,4 +73,4 @@ The three demo tenants use deliberately fake data (555 phone numbers, `.example`
 
 ---
 
-_Last updated: 2026-06-14. Maintained alongside `docs/STEP2_BUILD_MAP.md` and `memory.db`._
+_Last updated: 2026-06-14. Maintained alongside `docs/STEP2_BUILD_MAP.md`, `docs/STEP3_BUILD_MAP.md`, and `memory.db`._

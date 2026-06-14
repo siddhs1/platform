@@ -36,6 +36,13 @@
       "when": 1781411828450,
       "tag": "0004_fluffy_sue_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1781471524465,
+      "tag": "0005_legal_dragon_man",
+      "breakpoints": true
     }
   ]
 }

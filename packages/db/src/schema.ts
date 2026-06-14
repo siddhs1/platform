@@ -91,6 +91,23 @@ export const notificationStatus = pgEnum("notification_status", [
   "skipped",
 ]);
 
+// Console access roles. owner + staff are agency operators (cross-tenant);
+// client_admin + client_staff are the business owner's own team, scoped to
+// their single tenant. Activates the client console (Surface C).
+export const memberRole = pgEnum("member_role", [
+  "owner",
+  "staff",
+  "client_admin",
+  "client_staff",
+]);
+
+// A membership is "invited" until the user accepts (Clerk invite) and signs
+// in, then "active".
+export const membershipStatus = pgEnum("membership_status", [
+  "invited",
+  "active",
+]);
+
 // -- Tenants --
 // A client is a row. niche+city is unique -- enforces "one client per
 // niche per city" at the database level, making the exclusivity promise
@@ -312,6 +329,39 @@ export const subscriptions = pgTable(
   })
 );
 
+// -- Memberships --
+// Maps a Clerk user to a tenant with a role. One Clerk org per tenant; this
+// is the source of truth for a tenant's team list + each member's role.
+// A row may exist before the user accepts (invited by email, user_id null
+// until accept). Client tenant resolution itself is by org (tenants.clerk_org_id).
+export const memberships = pgTable(
+  "memberships",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => tenants.id, { onDelete: "cascade" }),
+    // Clerk user id; null while an invite is outstanding.
+    userId: text("user_id"),
+    email: text("email").notNull(),
+    role: memberRole("role").notNull().default("client_staff"),
+    status: membershipStatus("status").notNull().default("invited"),
+    invitedAt: timestamp("invited_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => ({
+    tenantEmailIdx: uniqueIndex("memberships_tenant_email_idx").on(
+      t.tenantId,
+      t.email
+    ),
+    userIdx: index("memberships_user_idx").on(t.userId),
+  })
+);
+
 export const tenantsRelations = relations(tenants, ({ many }) => ({
   domains: many(domains),
   siteConfigs: many(siteConfigs),
@@ -324,6 +374,13 @@ export const tenantsRelations = relations(tenants, ({ many }) => ({
 export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
   tenant: one(tenants, {
     fields: [subscriptions.tenantId],
+    references: [tenants.id],
+  }),
+}));
+
+export const membershipsRelations = relations(memberships, ({ one }) => ({
+  tenant: one(tenants, {
+    fields: [memberships.tenantId],
     references: [tenants.id],
   }),
 }));
