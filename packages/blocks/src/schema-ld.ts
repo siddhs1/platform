@@ -60,3 +60,29 @@ export function serviceJsonLd(args: {
     },
   };
 }
+
+/**
+ * BlogPosting schema for a generated /blog/<slug> post. Author and
+ * publisher are the business itself; no publish date is fabricated for
+ * scaffolded posts, so datePublished is intentionally omitted.
+ */
+export function blogPostingJsonLd(args: {
+  business: string;
+  headline: string;
+  description: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: args.headline,
+    description: args.description,
+    author: {
+      "@type": "Organization",
+      name: args.business,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: args.business,
+    },
+  };
+}

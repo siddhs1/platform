@@ -5,15 +5,20 @@
  *   * QA surface  - eyeball every variant after a change
  *   * VA reference - see what each variant/token combo looks like
  *
- * This lives at /_gallery. The underscore prefix makes it a PRIVATE route
- * segment in the App Router, so it is NOT reachable as a tenant hostname
- * path and never collides with the [host] catch-all. It's an internal tool;
- * gate it behind auth/allowlist before any public deploy (see THM.gate).
+ * GATING (THM.gate): this is an operator-only surface, NOT a public page. It
+ * lives at /internal/gallery, which middleware excludes from the tenant
+ * host-rewrite so it resolves at the app root (it is never a tenant page and
+ * never collides with the [host] catch-all). In development it is open for
+ * local QA; in production it requires GALLERY_ACCESS_TOKEN to be set AND
+ * supplied as ?key=<token>, otherwise it 404s (hiding its existence). It is
+ * also marked noindex so crawlers never list it. Set GALLERY_ACCESS_TOKEN in
+ * the sites app env before deploying (see SETUP_CHECKLIST.md); layering
+ * host-level auth or an IP allowlist in front of /internal/* is recommended.
  *
- * It renders blocks straight through the shared registry - the same path
- * the live renderer uses - so if it looks right here, it looks right in
- * production.
+ * It renders blocks straight through the shared registry - the same path the
+ * live renderer uses - so if it looks right here, it looks right in prod.
  */
+import { notFound } from "next/navigation";
 import {
   renderBlock,
   tokensToCssVars,
@@ -22,7 +27,14 @@ import {
 import { THEME_PRESETS } from "@platform/db";
 import type { SiteBlock } from "@platform/db";
 
-export const metadata = { title: "Theme gallery (internal)" };
+// Gating reads env + query at request time, so this route is never
+// statically prerendered (and never cached as public HTML).
+export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Theme gallery (internal)",
+  robots: { index: false, follow: false },
+};
 
 // Sample businesses paired with each preset so niche-derived and flag-gated
 // blocks render with realistic context. Niches are generative (any label
@@ -59,7 +71,21 @@ function sampleBlock(type: string, variant: string): SiteBlock {
   return { id: `${type}-${variant}`, type: type as SiteBlock["type"], variant, props: {} };
 }
 
-export default function GalleryPage() {
+export default async function GalleryPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ key?: string }>;
+}) {
+  // Operator-only. Open in development; gated in production by a shared
+  // token so the page is not publicly reachable on a deployed site.
+  if (process.env.NODE_ENV === "production") {
+    const token = process.env.GALLERY_ACCESS_TOKEN;
+    const { key } = await searchParams;
+    if (!token || key !== token) {
+      notFound();
+    }
+  }
+
   const defs = allBlockDefinitions();
 
   return (
@@ -115,7 +141,7 @@ export default function GalleryPage() {
       ))}
 
       <footer style={{ padding: "2rem 1.5rem 4rem", maxWidth: 1200, margin: "0 auto", color: "#7a7a82", fontSize: "0.85rem" }}>
-        Gate this route behind auth before deploying. Themes come from the shared preset library (packages/db/presets.ts).
+        Internal operator tool - gated via GALLERY_ACCESS_TOKEN. Themes come from the shared preset library (packages/db/presets.ts).
       </footer>
     </main>
   );

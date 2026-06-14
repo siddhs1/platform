@@ -55,6 +55,7 @@ Each channel degrades independently (unset keys = that channel is skipped, never
 ## 7. Hosting / deployment
 - [ ] `[LATER]` Choose a host (Vercel fits Next.js 15) and deploy **two apps**: the sites app and the console app.
 - [ ] `[LATER]` Set **all** env vars above in the host for each app's environment.
+- [ ] `[BEFORE DEPLOY]` Set **`GALLERY_ACCESS_TOKEN`** (any strong random string) in the **sites** app env to gate the internal theme gallery at `/internal/gallery` (open in dev; in production it 404s unless `?key=<token>` matches). Layering host-level auth or an IP allowlist in front of `/internal/*` is recommended.
 - [ ] `[LATER]` Run DB migrations against the production database as part of the deploy.
 
 ## 8. Monitoring (Step 5 hardening)

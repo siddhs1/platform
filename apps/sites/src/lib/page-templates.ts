@@ -20,6 +20,7 @@ import {
   servicesForNiche,
   slugify,
   serviceJsonLd,
+  blogPostingJsonLd,
   type ServiceDef,
   type BusinessContext,
 } from "@platform/blocks";
@@ -210,16 +211,21 @@ export function buildBlogIndexPage(site: ResolvedSite): RequestedPage {
 export function buildBlogPostPage(site: ResolvedSite, slug: string): RequestedPage {
   const { businessName: name } = site;
   const title = humanize(slug);
+  const description = `${title} - from the ${name} blog.`;
   const page: SitePage = {
     path: `/blog/${slug}`,
     title: `${title} | ${name}`,
-    meta: { description: `${title} - from the ${name} blog.` },
+    meta: { description },
     blocks: [
       block("post-body", "blog-post", "default", { title, author: name }),
       cta("post-cta", "Ready to get started?", "Get a free quote"),
     ],
   };
-  return { page, blockBusiness: homeBusiness(site), extraJsonLd: [] };
+  return {
+    page,
+    blockBusiness: homeBusiness(site),
+    extraJsonLd: [blogPostingJsonLd({ business: name, headline: title, description })],
+  };
 }
 
 // -- FAQ (A9) - faq block emits FAQPage JSON-LD itself -----------------

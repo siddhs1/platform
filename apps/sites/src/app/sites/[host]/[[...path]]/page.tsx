@@ -37,15 +37,38 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { host, path } = await params;
-  const site = await resolveSite(decodeURIComponent(host));
+  const hostname = decodeURIComponent(host);
+  const site = await resolveSite(hostname);
   if (!site) return {};
   const requested = getPageForRequest(site, pathFromSegments(path));
   if (!requested) return {};
   const { page } = requested;
+
+  const title = page.title ?? site.businessName;
+  const description = page.meta.description;
+  const origin = `https://${hostname}`;
+  const canonical = origin + page.path;
+  const isArticle = page.path.startsWith("/blog/");
+
   return {
-    title: page.title ?? site.businessName,
-    description: page.meta.description,
+    metadataBase: new URL(origin),
+    title,
+    description,
     keywords: page.meta.keywords,
+    alternates: { canonical },
+    openGraph: {
+      type: isArticle ? "article" : "website",
+      url: canonical,
+      title,
+      description,
+      siteName: site.businessName,
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
   };
 }
 

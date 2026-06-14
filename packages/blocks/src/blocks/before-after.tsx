@@ -17,14 +17,8 @@ import { registerBlock } from "../registry";
 import type { SiteBlock } from "@platform/db";
 import type { RenderContext } from "../registry";
 import { section, h2, eyebrow } from "./shared";
-import {
-  Slider,
-  Toggle,
-  panelBg,
-  tag,
-  frame,
-  type BAProps,
-} from "./before-after-widgets";
+import { Slider, Toggle, type BAProps } from "./before-after-widgets";
+import { panelBg, tag, frame } from "./before-after-shared";
 
 registerBlock({
   type: "before-after",

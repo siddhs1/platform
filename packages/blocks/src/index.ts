@@ -34,6 +34,7 @@ export { tokensToCssVars, FONT_PAIRS } from "./tokens";
 export {
   localBusinessJsonLd,
   serviceJsonLd,
+  blogPostingJsonLd,
   type BusinessContext,
 } from "./schema-ld";
 export {

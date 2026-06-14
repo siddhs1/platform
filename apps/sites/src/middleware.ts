@@ -15,7 +15,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export const config = {
   // Skip static assets, _next internals, and the API namespace.
-  matcher: ["/((?!_next/|_static/|api/|favicon.ico|robots.txt|sitemap.xml).*)"],
+  matcher: ["/((?!_next/|_static/|api/|favicon.ico|robots.txt|sitemap.xml|internal/).*)"],
 };
 
 export function middleware(req: NextRequest) {

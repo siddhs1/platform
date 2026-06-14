@@ -21,7 +21,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { tenants, domains, siteConfigs } from "./schema";
 import type { SitePage, ServiceArea, BusinessProfile } from "./types";
-import { slateTradesTokens, tealCareTokens, wineHospitalityTokens } from "./presets";
+import { trustBlueTokens, slateTradesTokens, tealCareTokens, wineHospitalityTokens } from "./presets";
 
 const url = process.env.DIRECT_URL ?? process.env.DATABASE_URL;
 if (!url) throw new Error("DIRECT_URL or DATABASE_URL must be set");
@@ -35,7 +35,7 @@ const slug = (s: string) =>
   s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
 // -- Three deliberately different token sets ---------------------------
-const ROOFING_TOKENS = slateTradesTokens;
+const ROOFING_TOKENS = trustBlueTokens;
 
 const DENTAL_TOKENS = tealCareTokens;
 
