@@ -46,19 +46,19 @@ Trust Blue `#1D4ED8` (brand) Ãƒâ€šÃ‚Â· Action Orange `#EA580C` (accen
 ## Phase 2 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â New blocks the designs need
 Reused ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“: hero, services, testimonials, reviews-feed, service-area, before-after, team, faq, gallery, cta-band, contact-form, footer.
 New ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ (each: register in `registry.ts`, add to `BLOCK_VARIANTS`, self-populate with niche defaults, AA, reduced-motion, show in `_gallery`):
-- [ ] **BLK.trust-bar** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ credentials/stats/logos strip under hero (Home).
-- [ ] **BLK.why-us** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ value-props / icon-feature grid (Home).
-- [ ] **BLK.story** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ rich-text / prose section (About).
-- [ ] **BLK.stats** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ metric cards ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â years, jobs, rating (About).
-- [ ] **BLK.credentials** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ license/insurance/cert badges (About, money page).
-- [ ] **BLK.guarantee** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ guarantee/warranty callout (About, money page).
-- [ ] **BLK.lead-hero** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ hero + inline lead form (money page A4).
-- [ ] **BLK.process** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ "what happens next" steps (money page A4).
-- [ ] **BLK.included** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ what's-included checklist (money page A4).
-- [ ] **BLK.blog-index** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ and **BLK.blog-post** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ scaffold (A8).
-- [ ] **BLK.contact** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ split: form + map + NAP/hours (A10).
-- [ ] **BLK.financing** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ financing options/info (A12). Calculator stays L4/[P2].
-- [ ] **BLK.legal** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ long-form prose template (A13).
+- [x] **BLK.trust-bar** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ credentials/stats/logos strip under hero (Home).
+- [x] **BLK.why-us** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ value-props / icon-feature grid (Home).
+- [x] **BLK.story** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ rich-text / prose section (About).
+- [x] **BLK.stats** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ metric cards ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â years, jobs, rating (About).
+- [x] **BLK.credentials** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ license/insurance/cert badges (About, money page).
+- [x] **BLK.guarantee** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ guarantee/warranty callout (About, money page).
+- [x] **BLK.lead-hero** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ hero + inline lead form (money page A4).
+- [x] **BLK.process** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ "what happens next" steps (money page A4).
+- [x] **BLK.included** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ what's-included checklist (money page A4).
+- [x] **BLK.blog-index** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ and **BLK.blog-post** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ scaffold (A8).
+- [x] **BLK.contact** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ split: form + map + NAP/hours (A10).
+- [x] **BLK.financing** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ financing options/info (A12). Calculator stays L4/[P2].
+- [x] **BLK.legal** ÃƒÂ¯Ã‚Â¼Ã¢â‚¬Â¹ long-form prose template (A13).
 
 ## Phase 3 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Page templates (block recipes, seeded into `site_configs.pages`)
 - [ ] **PG.home** (A1) `[v1]` ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â hero Ãƒâ€šÃ‚Â· trust-bar Ãƒâ€šÃ‚Â· services Ãƒâ€šÃ‚Â· why-us Ãƒâ€šÃ‚Â· before-after Ãƒâ€šÃ‚Â· reviews Ãƒâ€šÃ‚Â· service-area Ãƒâ€šÃ‚Â· faq Ãƒâ€šÃ‚Â· cta-band.
