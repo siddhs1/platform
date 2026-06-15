@@ -11,7 +11,10 @@ interface NavItem {
 
 // Week 3 ships the Dashboard. Leads / Editor / Billing live under
 // /tenants/[tenantId] and surface in the per-tenant sub-nav (later commits).
-const ITEMS: NavItem[] = [{ href: "/", label: "Dashboard", icon: "\u25E7" }];
+const ITEMS: NavItem[] = [
+  { href: "/", label: "Dashboard", icon: "\u25E7" },
+  { href: "/onboarding", label: "Onboard", icon: "\u2295" },
+];
 
 export default function NavLinks() {
   const pathname = usePathname();

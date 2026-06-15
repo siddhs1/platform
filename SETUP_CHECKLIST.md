@@ -75,3 +75,9 @@ The three demo tenants use deliberately fake data (555 phone numbers, `.example`
 ---
 
 _Last updated: 2026-06-14. Maintained alongside `docs/STEP2_BUILD_MAP.md`, `docs/STEP3_BUILD_MAP.md`, and `memory.db`._
+
+## Step 4 (onboarding + domains) - owner setup
+
+- [NEEDED] Cloudflare for SaaS: set `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ZONE_ID` (and `CLOUDFLARE_CNAME_TARGET` = the CNAME clients point at) to automate custom-hostname + SSL provisioning. Without them the domains tab shows manual DNS instructions and SSL stays pending.
+- [NEEDED] Configure the Cloudflare custom-hostname fallback origin to point at the deployed sites app.
+- [APPROVAL] Onboarding creates a Clerk org + sends a client invitation when Clerk keys exist; review the first few invites.
