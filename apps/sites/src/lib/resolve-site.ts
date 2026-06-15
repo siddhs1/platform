@@ -5,7 +5,7 @@
  * hostname and tagged so a publish can bust exactly one tenant's cache
  * via revalidateTag(`tenant:${id}`) -- no redeploy needed (ISR).
  */
-import { db, schema } from "@platform/db";
+import { readDb, schema } from "@platform/db";
 import { and, eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import type { SiteTokens, SitePage, FeatureFlags, ServiceArea, BusinessProfile } from "@platform/db";
@@ -26,7 +26,7 @@ export interface ResolvedSite {
 }
 
 async function loadSite(hostname: string): Promise<ResolvedSite | null> {
-  const rows = await db
+  const rows = await readDb
     .select({
       tenantId: schema.tenants.id,
       businessName: schema.tenants.businessName,

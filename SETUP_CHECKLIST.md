@@ -19,7 +19,7 @@ at the repo root) unless stated otherwise.
 ---
 
 ## 0. Approvals -- actions Claude will not take on its own
-- [x] `[SET]` **Git push is authorized.** Claude pushes freely. Branch model: `develop` = active work, `main` = PROD; both at `e312846` (pushed). Work lands on `develop`; a `develop` -> `main` merge is a release. CI runs typecheck/lint/build + a Lighthouse audit (needs the DB secrets in section 5).
+- [ ] `[APPROVAL]` **Git push / merge to main.** Claude commits locally on `develop` and pushes only on your explicit go-ahead. Branch model: `develop` = active work, `main` = PROD; both currently in sync at the latest `develop` commit (see `memory.db` `head_commit`). A `develop` -> `main` merge is a release. CI runs typecheck/lint/build + a Lighthouse audit (needs the DB secrets in section 5).
 - [ ] `[APPROVAL]` **Any payment or paid signup** (domain purchase, paid plan upgrades, phone-number purchase, etc.). Claude will tell you what to buy; you do the transaction.
 - [ ] `[APPROVAL]` **Production deploys / DNS cutover.** Claude prepares everything; you trigger the actual go-live.
 
@@ -28,9 +28,12 @@ at the repo root) unless stated otherwise.
 - [ ] `[LATER]` **Production database branch/instance.** For go-live you'll likely want a separate Neon branch (or project) for prod, plus backups/PITR enabled (Phase 1 Step 5 hardening).
 
 ## 2. Console authentication -- Clerk
-- [ ] `[DEV-STUB]` Local dev runs with `CONSOLE_DEV_NO_AUTH=1` (stub owner session) so console features work without Clerk. This must be **empty/unset in any deployed environment.**
-- [ ] `[NEEDED]` Create a Clerk application and set **`CLERK_SECRET_KEY`** + **`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`**. Without these the console degrades (no real auth).
-- [ ] `[LATER]` **Clerk Organizations** (one org per tenant; `client_admin` / `client_staff` roles) -- required for the tenant (client) console in Step 3.
+- [x] `[DEV-STUB]` Local dev can run with `CONSOLE_DEV_NO_AUTH=1` (stub owner session) when **no** Clerk keys are set. Real Clerk keys are now in `.env`, so this bypass is **inert** (`clerkEnabled` takes precedence) and the console always uses real auth -- the desired behavior. Must be empty/unset in any deployed environment.
+- [x] `[NEEDED]` Create a Clerk application and set **`CLERK_SECRET_KEY`** + **`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`**. Without these the console degrades (no real auth).
+- [x] `[SET]` **Clerk Organizations** enabled (one org per tenant). `force_organization_selection` is OFF so operators are not forced into an org. Client roles (`client_admin`/`client_staff`) live in the `memberships` table (migration 0005), NOT in Clerk -- so the paid Custom-Roles add-on is not needed. A tenant's `clerk_org_id` links it to its org. Verified: the `demo-roofing` tenant is linked to a real org and resolves as `client_admin`. **Operator roles** (`owner`/`staff`) are set on the Clerk user's `publicMetadata.role` via the Backend API/dashboard (the first operator account was set to `owner`).
+- [x] `[DEV-STUB]` Portal dev bypass (`CONSOLE_DEV_NO_AUTH=1` + optional **`CONSOLE_DEV_PORTAL_SLUG`**) binds the portal to one tenant as `client_admin` -- only when **no** Clerk keys are set; **inert** now that real keys exist. With real auth, viewing `/portal` requires a user whose active Clerk org maps to a tenant (the client invitation/accept flow, B14). Must be empty/unset in any deployed environment.
+- [x] `[SET]` **Post-sign-in routing.** Everyone lands on `/post-auth` (Clerk `SIGN_IN_FORCE_REDIRECT_URL`), which routes operators to `/` and clients (active org -> tenant) to `/portal`. Unauthenticated -> `/sign-in`; signed-in-but-unlinked -> a terminal "account pending setup" page (no redirect loop). Enforced in `lib/auth.ts` (`requireSession`) + `lib/portal.ts` (`requirePortal`).
+- [ ] `[NEEDED]` **Client invitations.** Invite client users into their tenant's Clerk org (writes a `memberships` row) from the console -- lands with B14 (Account & team). Operator impersonation of a tenant should be audited (Step 5 / `audit_log`).
 
 ## 3. Billing -- Stripe (agency's own retainers)
 - [ ] `[NEEDED]` Create a Stripe account; set **`STRIPE_SECRET_KEY`**. Without it the billing page shows a "not configured" notice and the webhook returns 400 (by design).
@@ -71,4 +74,17 @@ The three demo tenants use deliberately fake data (555 phone numbers, `.example`
 
 ---
 
-_Last updated: 2026-06-14. Maintained alongside `docs/STEP2_BUILD_MAP.md` and `memory.db`._
+_Last updated: 2026-06-14. Maintained alongside `docs/STEP2_BUILD_MAP.md`, `docs/STEP3_BUILD_MAP.md`, and `memory.db`._
+
+## Step 4 (onboarding + domains) - owner setup
+
+- [NEEDED] Cloudflare for SaaS: set `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ZONE_ID` (and `CLOUDFLARE_CNAME_TARGET` = the CNAME clients point at) to automate custom-hostname + SSL provisioning. Without them the domains tab shows manual DNS instructions and SSL stays pending.
+- [NEEDED] Configure the Cloudflare custom-hostname fallback origin to point at the deployed sites app.
+- [APPROVAL] Onboarding creates a Clerk org + sends a client invitation when Clerk keys exist; review the first few invites.
+
+## Production hardening - owner setup
+
+- [READY NOW] Least-privilege sites read role: create `sites_reader` in Neon (it gets its own connection string), run `packages/db/src/roles.sql`, then set `SITES_DATABASE_URL` to that connection string and redeploy the sites app. Until set, the app falls back to `DATABASE_URL` (no behaviour change). The console keeps using the privileged app role.
+- [NEEDED] Neon backups / PITR: enable point-in-time restore on the project and document a restore runbook (depends on the Neon plan tier).
+- [NEEDED] Error monitoring: create a Sentry project and set `SENTRY_DSN` (already declared in turbo.json). The Sentry Next.js SDK + config wrapping is a deliberate follow-up (build-config change) - pick the approach before wiring.
+- [DEFERRED] `sites_writer` role (INSERT-only on leads + notifications) so the public lead-intake path is also de-privileged; broader operator data export; support/SLA process.

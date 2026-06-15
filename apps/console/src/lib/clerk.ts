@@ -21,9 +21,15 @@ export const devNoAuth =
   process.env.NODE_ENV !== "production" &&
   process.env.CONSOLE_DEV_NO_AUTH === "1";
 
-export type Role = "owner" | "staff" | "client";
+export type Role = "owner" | "staff" | "client_admin" | "client_staff";
 
 /** owner + staff (VAs) are operators with cross-tenant access. */
 export function isOperator(role: Role): boolean {
   return role === "owner" || role === "staff";
+}
+
+/** client_admin + client_staff are a tenant's own team (Surface C, the
+ *  client console). They are scoped to their single tenant. */
+export function isClient(role: Role): boolean {
+  return role === "client_admin" || role === "client_staff";
 }

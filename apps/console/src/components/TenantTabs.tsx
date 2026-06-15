@@ -26,6 +26,7 @@ export default function TenantTabs({
     { segment: "leads", label: "Leads", href: `${base}/leads`, count: newLeads },
     { segment: "editor", label: "Editor", href: `${base}/editor` },
     { segment: "billing", label: "Billing", href: `${base}/billing` },
+    { segment: "domains", label: "Domains", href: `${base}/domains` },
   ];
 
   return (

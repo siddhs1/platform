@@ -12,8 +12,7 @@ import { neon } from "@neondatabase/serverless";
 import { sql } from "drizzle-orm";
 import * as schema from "./schema";
 
-function createDb() {
-  const connectionString = process.env.DATABASE_URL;
+function createDb(connectionString: string | undefined) {
   if (!connectionString) {
     throw new Error("DATABASE_URL is not set");
   }
@@ -24,7 +23,23 @@ type DrizzleClient = ReturnType<typeof createDb>;
 
 let _db: DrizzleClient | undefined;
 function getDb(): DrizzleClient {
-  return (_db ??= createDb());
+  return (_db ??= createDb(process.env.DATABASE_URL));
+}
+
+/**
+ * Read-only client for the PUBLIC sites app. Uses SITES_DATABASE_URL when set
+ * -- the least-privilege `sites_reader` role (SELECT on tenants/domains/
+ * site_configs only, BYPASSRLS for hostname-keyed published reads; see
+ * roles.sql) -- and falls back to DATABASE_URL so behaviour is identical until
+ * the owner provisions the role. The console always uses `db` (the RLS-subject
+ * app role). This narrows the blast radius of the internet-facing app: a
+ * compromise of the sites read path cannot read leads/PII or write anything.
+ */
+let _readDb: DrizzleClient | undefined;
+function getReadDb(): DrizzleClient {
+  return (_readDb ??= createDb(
+    process.env.SITES_DATABASE_URL ?? process.env.DATABASE_URL
+  ));
 }
 
 /**
@@ -35,6 +50,15 @@ function getDb(): DrizzleClient {
 export const db = new Proxy({} as DrizzleClient, {
   get(_target, prop) {
     const instance = getDb() as unknown as Record<string | symbol, unknown>;
+    const value = instance[prop];
+    return typeof value === "function" ? value.bind(instance) : value;
+  },
+});
+
+/** Read-only proxy backed by getReadDb() (see above). */
+export const readDb = new Proxy({} as DrizzleClient, {
+  get(_target, prop) {
+    const instance = getReadDb() as unknown as Record<string | symbol, unknown>;
     const value = instance[prop];
     return typeof value === "function" ? value.bind(instance) : value;
   },
