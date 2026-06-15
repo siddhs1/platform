@@ -846,3 +846,60 @@ a { color: inherit; text-decoration: none; }
   .p-reqrow .p-attn { display: none; }
   .p-reqrow .p-req-age { display: none; }
 }
+/* ============================================================
+   B6 billing + receipts
+   ============================================================ */
+
+/* extra subscription badge variants (base + active/trialing/past_due/unpaid/none
+   already defined with the dashboard money strip) */
+.p-badge.canceled,
+.p-badge.incomplete,
+.p-badge.incomplete_expired,
+.p-badge.paused { background: var(--pf-slate-soft); color: var(--pf-slate); }
+
+/* plan card */
+.p-plancard {
+  background: var(--pf-paper);
+  border: 1px solid var(--pf-line);
+  border-radius: var(--pf-radius);
+  box-shadow: var(--pf-shadow-sm);
+  padding: 18px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.p-plan-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.p-plan-name {
+  font-family: var(--f-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+.p-plan-meta { display: flex; flex-wrap: wrap; gap: 10px 32px; padding-top: 14px; border-top: 1px solid var(--pf-line); }
+.p-plan-meta .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--pf-muted); }
+.p-plan-meta .val { font-weight: 600; }
+
+/* receipts */
+.p-receiptlist { list-style: none; margin: 0; padding: 0; }
+.p-receiptlist li { border-bottom: 1px solid var(--pf-line); }
+.p-receiptlist li:last-child { border-bottom: none; }
+.p-receiptrow {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+}
+.p-rc-amt { font-weight: 600; }
+.p-rc-status { font-size: 12.5px; color: var(--pf-soft); }
+.p-rc-pdf { text-align: right; }
+
+@media (max-width: 860px) {
+  .p-receiptrow { grid-template-columns: 1fr auto auto; }
+  .p-rc-status { display: none; }
+}

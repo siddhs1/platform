@@ -54,10 +54,11 @@ Calm, light, trust-forward, deliberately distinct from the operator console (dar
 - [x] **B5.2** Approve path (`/portal/requests/[requestId]`): status-driven explainer; when `preview_ready`, Approve-and-publish (-> `approved`) or Request-changes (-> `in_progress`); approved/published show a confirmation. A live configDiff preview in the portal + the final publish are operator-mediated (operator stages `configDiff` and publishes via the Step 2 flow). Conversation thread + attachments deferred.
 - [x] **B4.V** Flipped `Requests` nav `enabled`; bare `pnpm typecheck` 6/6 + `lint` 2/2 + production `build` 2/2 green; routes `/portal/requests`, `/portal/requests/new`, `/portal/requests/[requestId]` registered dynamic. NOTE: a full authed `/portal` runtime smoke is not possible headlessly (real Clerk keys live). Data layer: `apps/console/src/lib/portal-requests.ts`; actions: `app/portal/requests/actions.ts`.
 
-## Phase 4 -- B6 billing + receipts  `[v1]`
-- [ ] **B6.1** Billing page: current plan/status, next retainer charge, payment method (Stripe customer portal link), invoice/receipt history. Reuses the Stripe scaffold (`lib/billing.ts` / `lib/stripe.ts`); degrades cleanly without keys.
-- [ ] **B6.2** Receipts list/download from Stripe invoices (read-only).
-- [ ] **B6.V** Flip `Billing` nav; verify against Stripe test mode (owner provides keys) or the degraded notice; build + smoke.
+## Phase 4 -- B6 billing + receipts  `[v1]`  [DONE 2026-06-14]
+> Shipped on `develop` (NO migration -- reuses the Stripe scaffold + the subscriptions table from 0002). Client view is read + manage-only: plan/status/next-charge + a Stripe Billing Portal link + read-only receipts. Starting a NEW subscription stays an onboarding/operator action (not exposed in the portal). Degrades cleanly when Stripe is not configured. Live Stripe data could not be exercised here (no STRIPE_* keys in this env); the degraded path + build are verified.
+- [x] **B6.1** Billing page (`/portal/billing`): plan card = plan label + subscription status badge + next-charge date (from the subscriptions row the webhook keeps current); "Manage billing" button -> Stripe Billing Portal (`createPortalBillingPortal`, return_url back to /portal/billing) where the client updates the card / views invoices on Stripe-hosted pages; disabled with a notice when Stripe is unconfigured or there is no customer yet; past_due/unpaid + not-configured banners. Reuses `lib/billing.ts` (planLabel/subscriptionStatusLabel) + `lib/stripe.ts` (stripeEnabled/getStripe).
+- [x] **B6.2** Receipts (read-only): lists the customer Stripe invoices (date, amount, status, View -> invoice_pdf/hosted_invoice_url in a new tab); never fails the page on a Stripe read (try/catch -> empty); empty state when none / not active.
+- [x] **B6.V** Flipped `Billing` nav `enabled` (desktop sidebar; intentionally left OFF the mobile tab bar, which already holds 5 items); bare `pnpm typecheck` 6/6 + `lint` 2/2 + production `build` 2/2 green; `/portal/billing` registered dynamic. Data layer: `apps/console/src/lib/portal-billing.ts`; action: `app/portal/billing/actions.ts` (errorRedirect:never composed via .catch, mirrors the operator billing action).
 
 ## Phase 5 -- B12 site appearance  `[v1]`
 - [ ] **B12.1** Safe-field site editor: business profile (hours, phone, service areas, social links), theme preset choice, logo/hero text -- token/data-level only (L1--L2). Live preview via `packages/blocks`.
@@ -80,4 +81,4 @@ Calm, light, trust-forward, deliberately distinct from the operator console (dar
 
 ---
 
-_Last updated: 2026-06-14 (Phases 2-3: B2/B3 leads + B4/B5 requests shipped). Maintained alongside `docs/PRD.md`, `docs/WIREFRAMES.md`, `docs/STEP2_BUILD_MAP.md`, and `memory.db`._
+_Last updated: 2026-06-14 (Phases 2-4: leads, requests, billing shipped). Maintained alongside `docs/PRD.md`, `docs/WIREFRAMES.md`, `docs/STEP2_BUILD_MAP.md`, and `memory.db`._

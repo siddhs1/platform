@@ -23,7 +23,7 @@ const ITEMS: NavItem[] = [
   { href: "/portal/leads", label: "Leads", icon: "inbox", enabled: true, badge: true, mobile: true },
   { href: "/portal/requests", label: "Requests", icon: "chat", enabled: true, mobile: true },
   { href: "/portal/reviews", label: "Reviews", icon: "star", enabled: false, mobile: true },
-  { href: "/portal/billing", label: "Billing", icon: "card", enabled: false },
+  { href: "/portal/billing", label: "Billing", icon: "card", enabled: true },
   { href: "/portal/site", label: "Your Site", icon: "globe", enabled: false },
   { href: "/portal/settings", label: "Settings", icon: "gear", enabled: false, mobile: true },
 ];
