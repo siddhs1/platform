@@ -25,7 +25,7 @@ const ITEMS: NavItem[] = [
   { href: "/portal/reviews", label: "Reviews", icon: "star", enabled: false, mobile: true },
   { href: "/portal/billing", label: "Billing", icon: "card", enabled: true },
   { href: "/portal/site", label: "Your Site", icon: "globe", enabled: true },
-  { href: "/portal/settings", label: "Settings", icon: "gear", enabled: false, mobile: true },
+  { href: "/portal/settings", label: "Settings", icon: "gear", enabled: true, mobile: true },
 ];
 
 function useIsActive() {

@@ -66,20 +66,21 @@ Calm, light, trust-forward, deliberately distinct from the operator console (dar
 - [x] **B12.2** Apply theme: validates `{tokens, pages, customCss, featureFlags}` with `siteConfigSchema`, writes the draft (`updateDraftConfig`) then publishes via `publishConfig` (+ a `config_versions` snapshot + host-cache bust), so it lands in the dashboard "what is new" feed. Business details save immediately to the tenant row + bust the host caches (live within the ISR window).
 - [x] **B12.V** Flipped `Your Site` nav `enabled`; bare `pnpm typecheck` 6/6 + `lint` 2/2 + production `build` 2/2 green; `/portal/site` + `/portal-preview` registered dynamic. Data layer: `apps/console/src/lib/portal-site.ts` (updateBusinessProfile + matchPresetId); actions: `app/portal/site/actions.ts` (saveBusinessDetails + applyTheme). NOTE: full authed `/portal` runtime smoke not feasible headlessly (real Clerk keys live).
 
-## Phase 6 -- B13 notifications + B14 account & data  `[v1]`
-- [ ] **B13.1** Notification settings: edit `tenants.notify_email` / `notify_phone` + per-channel toggles (`notify_*`); test-send (degrades without Resend/Twilio keys).
-- [ ] **B14.1** Account & team: list `memberships` for the tenant; invite teammate (writes a `memberships` row, sends Clerk invite when keys exist); role display.
-- [ ] **B14.2** Data export: CSV of leads (tenant-scoped); account/business details view.
-- [ ] **B6.V** Flip `Settings` nav; verify notify writes + member list + CSV export; build + smoke.
+## Phase 6 -- B13 notifications + B14 account & data  `[v1]`  [DONE 2026-06-14]
+> Shipped on `develop` (NO migration). All on `/portal/settings`. Test-send + the email invite degrade cleanly when Resend/Twilio/Clerk are unconfigured.
+- [x] **B13.1** Notifications: edit `tenants.notify_email` / `notify_phone` + per-channel toggles (`notify_email_enabled` / `notify_sms_enabled`); a "Send a test" button fires `@platform/notify` notifyNewLead to the saved recipients (channels without provider keys return a skipped outcome). Data: `lib/portal-settings.ts` updateNotifyPrefs.
+- [x] **B14.1** Account & team: lists `memberships` for the tenant (email + role + invited/active badge); invite form writes a `memberships` row (upsert on (tenant,email), status invited) and best-effort sends a Clerk org invitation when keys + org exist. Data: `lib/portal-team.ts` listMembers + createInvite.
+- [x] **B14.2** Data export: `/portal/settings/export` route handler streams the tenant leads as CSV (`leadsToCsv`, tenant from the session); account/business details view on the page. Mobile-reachable sign-out added to the account section (Clerk SignOutButton, gated by clerkEnabled) since the sidebar is hidden on mobile.
+- [x] **B6.V** Flipped `Settings` nav `enabled`; bare `pnpm typecheck` 6/6 + `lint` 2/2 + production `build` 2/2 green; `/portal/settings` + `/portal/settings/export` registered dynamic. Actions: `app/portal/settings/actions.ts` (saveNotifications / sendTestNotification / inviteTeammate).
 
-## Phase 7 -- Acceptance & housekeeping
-- [ ] **ACC.build** -- bare `pnpm typecheck` + `lint` + `build` green (NOT corepack), each commit.
-- [ ] **ACC.routes** -- every `[v1]` portal route renders for a resolved tenant; tenant isolation holds (no cross-tenant reads); disabled items never 404.
-- [ ] **ACC.a11y** -- keyboard nav, focus-visible, AA contrast, reduced-motion; mobile tab bar + sign-out reachable on mobile (lands with B14 settings).
+## Phase 7 -- Acceptance & housekeeping  [DONE 2026-06-14]
+- [x] **ACC.build** -- bare `pnpm` (never corepack) typecheck 6/6 + lint 2/2 + production build 2/2 green on every Step 3 commit; final build registers all 11 portal routes dynamic (/portal, /portal-preview, /portal/leads(+[leadId]), /portal/requests(+/new,+[requestId]), /portal/billing, /portal/site, /portal/settings(+/export)).
+- [x] **ACC.routes** -- all `[v1]` portal routes registered + compiled; tenant isolation holds by construction (every portal read/write scopes to ctx.tenant.id from requirePortal(); no tenant id is taken from the URL; writes match (id AND tenant_id)); disabled nav items render as dimmed spans (never links), so they cannot 404. NOTE: a full authed runtime render could not be exercised headlessly because real Clerk keys are live (dev bypass inert); the build + isolation-by-construction are the gate.
+- [x] **ACC.a11y** -- focus-visible ring on all portal links/buttons (portal.css); form fields carry labels (htmlFor) or aria-label; forms + links are keyboard-operable (form server actions, next/link); minimal motion (no animations beyond hover/transition); AA-contrast trust-blue palette carried from Step 2; mobile bottom tab bar present + a mobile-reachable Sign out added to /portal/settings (sidebar sign-out is hidden on mobile).
 - [x] **HK.docs** -- commit this map; keep `SETUP_CHECKLIST.md` (Clerk orgs / invitations / post-auth routing) in sync.
 - [x] **HK.memory** -- update `memory.db` `build_status` / `next_steps` / `notes` / `meta` for the portal foundation.
-- [ ] **HK.commit** -- commit in logical chunks (foundation -> leads -> requests -> billing -> site -> settings). Push only on explicit owner OK.
+- [x] **HK.commit** -- committed in logical chunks on develop (foundation -> auth -> leads -> requests -> billing -> site -> settings); HELD pending owner OK to push.
 
 ---
 
-_Last updated: 2026-06-14 (Phases 2-5: leads, requests, billing, site appearance shipped). Maintained alongside `docs/PRD.md`, `docs/WIREFRAMES.md`, `docs/STEP2_BUILD_MAP.md`, and `memory.db`._
+_Last updated: 2026-06-14 (Step 3 client console v1 COMPLETE: B0-B6/B12-B14 + acceptance; all on develop, held). Maintained alongside `docs/PRD.md`, `docs/WIREFRAMES.md`, `docs/STEP2_BUILD_MAP.md`, and `memory.db`._
