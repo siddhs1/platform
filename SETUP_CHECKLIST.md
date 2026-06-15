@@ -81,3 +81,10 @@ _Last updated: 2026-06-14. Maintained alongside `docs/STEP2_BUILD_MAP.md`, `docs
 - [NEEDED] Cloudflare for SaaS: set `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ZONE_ID` (and `CLOUDFLARE_CNAME_TARGET` = the CNAME clients point at) to automate custom-hostname + SSL provisioning. Without them the domains tab shows manual DNS instructions and SSL stays pending.
 - [NEEDED] Configure the Cloudflare custom-hostname fallback origin to point at the deployed sites app.
 - [APPROVAL] Onboarding creates a Clerk org + sends a client invitation when Clerk keys exist; review the first few invites.
+
+## Production hardening - owner setup
+
+- [READY NOW] Least-privilege sites read role: create `sites_reader` in Neon (it gets its own connection string), run `packages/db/src/roles.sql`, then set `SITES_DATABASE_URL` to that connection string and redeploy the sites app. Until set, the app falls back to `DATABASE_URL` (no behaviour change). The console keeps using the privileged app role.
+- [NEEDED] Neon backups / PITR: enable point-in-time restore on the project and document a restore runbook (depends on the Neon plan tier).
+- [NEEDED] Error monitoring: create a Sentry project and set `SENTRY_DSN` (already declared in turbo.json). The Sentry Next.js SDK + config wrapping is a deliberate follow-up (build-config change) - pick the approach before wiring.
+- [DEFERRED] `sites_writer` role (INSERT-only on leads + notifications) so the public lead-intake path is also de-privileged; broader operator data export; support/SLA process.
