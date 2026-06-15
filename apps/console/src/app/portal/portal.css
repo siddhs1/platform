@@ -903,3 +903,60 @@ a { color: inherit; text-decoration: none; }
   .p-receiptrow { grid-template-columns: 1fr auto auto; }
   .p-rc-status { display: none; }
 }
+/* ============================================================
+   B12 site appearance (theme + business details + preview)
+   ============================================================ */
+.p-site-cols { display: grid; grid-template-columns: 1fr 380px; gap: 16px; align-items: start; }
+.p-site-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+/* theme picker */
+.p-themegrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.p-themecard {
+  display: flex;
+  gap: 11px;
+  padding: 12px;
+  border: 1px solid var(--pf-line);
+  border-radius: var(--pf-radius-sm);
+  cursor: pointer;
+  align-items: flex-start;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+.p-themecard:hover { border-color: var(--pf-line-strong); }
+.p-themecard.is-active { border-color: var(--pf-brand); background: var(--pf-brand-soft); }
+.p-themecard input { margin-top: 3px; flex: none; }
+.p-theme-swatches { display: flex; gap: 3px; flex: none; }
+.p-theme-swatches span { width: 13px; height: 26px; border-radius: 3px; display: block; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06); }
+.p-theme-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.p-theme-name { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.p-theme-cur {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--pf-brand);
+  color: #fff;
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+.p-theme-desc { font-size: 12px; color: var(--pf-muted); line-height: 1.4; }
+
+/* form grids + checkbox */
+.p-form-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.p-checkbox { display: flex; align-items: center; gap: 8px; font-size: 13.5px; cursor: pointer; }
+.p-checkbox input { width: 16px; height: 16px; }
+.p-check-row { padding-top: 22px; }
+
+/* preview panel */
+.p-preview-panel { position: sticky; top: 76px; overflow: hidden; }
+.p-preview-frame { height: 520px; overflow: hidden; background: var(--pf-bg); }
+.p-preview-frame iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
+
+@media (max-width: 980px) {
+  .p-site-cols { grid-template-columns: 1fr; }
+  .p-preview-panel { position: static; }
+  .p-preview-frame { height: 420px; }
+}
+@media (max-width: 620px) {
+  .p-themegrid { grid-template-columns: 1fr; }
+  .p-form-grid2 { grid-template-columns: 1fr; }
+  .p-check-row { padding-top: 0; }
+}

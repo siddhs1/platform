@@ -60,10 +60,11 @@ Calm, light, trust-forward, deliberately distinct from the operator console (dar
 - [x] **B6.2** Receipts (read-only): lists the customer Stripe invoices (date, amount, status, View -> invoice_pdf/hosted_invoice_url in a new tab); never fails the page on a Stripe read (try/catch -> empty); empty state when none / not active.
 - [x] **B6.V** Flipped `Billing` nav `enabled` (desktop sidebar; intentionally left OFF the mobile tab bar, which already holds 5 items); bare `pnpm typecheck` 6/6 + `lint` 2/2 + production `build` 2/2 green; `/portal/billing` registered dynamic. Data layer: `apps/console/src/lib/portal-billing.ts`; action: `app/portal/billing/actions.ts` (errorRedirect:never composed via .catch, mirrors the operator billing action).
 
-## Phase 5 -- B12 site appearance  `[v1]`
-- [ ] **B12.1** Safe-field site editor: business profile (hours, phone, service areas, social links), theme preset choice, logo/hero text -- token/data-level only (L1--L2). Live preview via `packages/blocks`.
-- [ ] **B12.2** Save -> new `config_version` (draft) -> publish (reuses Step 2 publish flow); appears in the dashboard "what's new" feed.
-- [ ] **B12.V** Flip `Your Site` nav; verify edit -> preview -> publish; build + smoke.
+## Phase 5 -- B12 site appearance  `[v1]`  [DONE 2026-06-14]
+> Shipped on `develop` (NO migration). Safe-field only: the portal edits business profile (scalar fields + socials) and picks a curated THEME_PRESET; it never exposes raw token JSON or custom CSS. Theme apply is one step (update draft tokens + publish via the Step 2 flow) for a friendly client UX; a separate draft-stage-then-publish two-step is possible later. Hours + service areas editing deferred (need a repeatable-row editor) -- noted in-UI as "edited via a request for now".
+- [x] **B12.1** `/portal/site`: theme preset picker (THEME_PRESETS radio cards with color swatches + current-marker) + a safe business-details form (tagline, phone, email, license number, licensed-and-insured toggle, 4 social URLs). LIVE PREVIEW via a chrome-less `/portal-preview` route that renders the DRAFT through `@platform/blocks` (the exact production renderer; tenant from the session, never the URL) embedded in an iframe + an "Open in new tab" link. Business profile -> `tenants.business_profile`; theme -> L1 tokens. Logo upload deferred (no asset storage yet).
+- [x] **B12.2** Apply theme: validates `{tokens, pages, customCss, featureFlags}` with `siteConfigSchema`, writes the draft (`updateDraftConfig`) then publishes via `publishConfig` (+ a `config_versions` snapshot + host-cache bust), so it lands in the dashboard "what is new" feed. Business details save immediately to the tenant row + bust the host caches (live within the ISR window).
+- [x] **B12.V** Flipped `Your Site` nav `enabled`; bare `pnpm typecheck` 6/6 + `lint` 2/2 + production `build` 2/2 green; `/portal/site` + `/portal-preview` registered dynamic. Data layer: `apps/console/src/lib/portal-site.ts` (updateBusinessProfile + matchPresetId); actions: `app/portal/site/actions.ts` (saveBusinessDetails + applyTheme). NOTE: full authed `/portal` runtime smoke not feasible headlessly (real Clerk keys live).
 
 ## Phase 6 -- B13 notifications + B14 account & data  `[v1]`
 - [ ] **B13.1** Notification settings: edit `tenants.notify_email` / `notify_phone` + per-channel toggles (`notify_*`); test-send (degrades without Resend/Twilio keys).
@@ -81,4 +82,4 @@ Calm, light, trust-forward, deliberately distinct from the operator console (dar
 
 ---
 
-_Last updated: 2026-06-14 (Phases 2-4: leads, requests, billing shipped). Maintained alongside `docs/PRD.md`, `docs/WIREFRAMES.md`, `docs/STEP2_BUILD_MAP.md`, and `memory.db`._
+_Last updated: 2026-06-14 (Phases 2-5: leads, requests, billing, site appearance shipped). Maintained alongside `docs/PRD.md`, `docs/WIREFRAMES.md`, `docs/STEP2_BUILD_MAP.md`, and `memory.db`._
