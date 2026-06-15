@@ -21,7 +21,7 @@ interface NavItem {
 const ITEMS: NavItem[] = [
   { href: "/portal", label: "Dashboard", icon: "home", enabled: true, exact: true, mobile: true },
   { href: "/portal/leads", label: "Leads", icon: "inbox", enabled: true, badge: true, mobile: true },
-  { href: "/portal/requests", label: "Requests", icon: "chat", enabled: false },
+  { href: "/portal/requests", label: "Requests", icon: "chat", enabled: true, mobile: true },
   { href: "/portal/reviews", label: "Reviews", icon: "star", enabled: false, mobile: true },
   { href: "/portal/billing", label: "Billing", icon: "card", enabled: false },
   { href: "/portal/site", label: "Your Site", icon: "globe", enabled: false },

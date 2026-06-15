@@ -47,11 +47,12 @@ Calm, light, trust-forward, deliberately distinct from the operator console (dar
 - [x] **B3.1** Lead detail (`/portal/leads/[leadId]`): contact (click-to-call / text / email), source + received-at, editable estimated value (logged), message, status dropdown + Mark won/lost; activity timeline (status changes + notes + synthetic "created"); add-note composer; won reveals review/invoice CTAs (disabled, arrive in Phase 2 retention work).
 - [x] **B2.V** Flipped `Leads` nav `enabled`; bare `pnpm typecheck` 6/6 + `lint` 2/2 + production `build` 2/2 green (both new routes registered dynamic). NOTE: a full authed `/portal` runtime smoke is not possible headlessly now that real Clerk keys are live -- it needs a signed-in client session (the B14 invitation flow). Data layer: `apps/console/src/lib/portal-leads.ts`; actions: `app/portal/leads/actions.ts`.
 
-## Phase 3 -- B4 requests list + B5 request create/approve  `[v1]`
-- [ ] **B4.1** Change-requests list (reuses `change_requests`): status, type, submitted/updated, who.
-- [ ] **B5.1** Create request (free-text + category; optional target page/section), writes `change_requests`.
-- [ ] **B5.2** Approve-via-preview: client reviews a proposed change against the live-preview (`packages/blocks`), approves/declines; on approve ties into the existing publish/version flow (operator-mediated where needed).
-- [ ] **B4.V** Flip `Requests` nav; verify create + approve path; build + smoke.
+## Phase 3 -- B4 requests list + B5 request create/approve  `[v1]`  [DONE 2026-06-14]
+> Shipped on `develop` (NO migration -- reuses `change_requests`). The portal is the first surface that CREATES change_requests (the operator editor only listed them). Type + target page are encoded into `description` as a "[kind | page]" header (parsed back for display) since the table has no kind/page columns. Deferred, non-blocking (would need a migration / storage): a threaded conversation, file attachments, a per-request live configDiff preview, an assignee, and an updated-at timestamp. Approve/decline drive status; the actual publish stays operator-mediated via the Step 2 publish/version flow.
+- [x] **B4.1** Requests list (`/portal/requests`): Open/Completed tabs with counts; rows = status dot + derived title + type/page chips + status pill + age + "Action needed" flag when `preview_ready` + chevron -> detail; tenant-scoped via `requirePortal()`. (Uses `createdAt`; no assignee/updated-at column.)
+- [x] **B5.1** Create request (`/portal/requests/new`): type select (Content/Photo/New page/Business info/Other) + optional target-page select + free-text; writes a `change_requests` row (status `queued`, requestedBy = client actor). Attachments noted as coming soon.
+- [x] **B5.2** Approve path (`/portal/requests/[requestId]`): status-driven explainer; when `preview_ready`, Approve-and-publish (-> `approved`) or Request-changes (-> `in_progress`); approved/published show a confirmation. A live configDiff preview in the portal + the final publish are operator-mediated (operator stages `configDiff` and publishes via the Step 2 flow). Conversation thread + attachments deferred.
+- [x] **B4.V** Flipped `Requests` nav `enabled`; bare `pnpm typecheck` 6/6 + `lint` 2/2 + production `build` 2/2 green; routes `/portal/requests`, `/portal/requests/new`, `/portal/requests/[requestId]` registered dynamic. NOTE: a full authed `/portal` runtime smoke is not possible headlessly (real Clerk keys live). Data layer: `apps/console/src/lib/portal-requests.ts`; actions: `app/portal/requests/actions.ts`.
 
 ## Phase 4 -- B6 billing + receipts  `[v1]`
 - [ ] **B6.1** Billing page: current plan/status, next retainer charge, payment method (Stripe customer portal link), invoice/receipt history. Reuses the Stripe scaffold (`lib/billing.ts` / `lib/stripe.ts`); degrades cleanly without keys.
@@ -79,4 +80,4 @@ Calm, light, trust-forward, deliberately distinct from the operator console (dar
 
 ---
 
-_Last updated: 2026-06-14 (Phase 2 B2/B3 shipped). Maintained alongside `docs/PRD.md`, `docs/WIREFRAMES.md`, `docs/STEP2_BUILD_MAP.md`, and `memory.db`._
+_Last updated: 2026-06-14 (Phases 2-3: B2/B3 leads + B4/B5 requests shipped). Maintained alongside `docs/PRD.md`, `docs/WIREFRAMES.md`, `docs/STEP2_BUILD_MAP.md`, and `memory.db`._
