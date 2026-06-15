@@ -43,6 +43,13 @@
       "when": 1781471524465,
       "tag": "0005_legal_dragon_man",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1781481306404,
+      "tag": "0006_free_roland_deschain",
+      "breakpoints": true
     }
   ]
 }

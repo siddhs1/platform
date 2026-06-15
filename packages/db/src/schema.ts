@@ -108,6 +108,14 @@ export const membershipStatus = pgEnum("membership_status", [
   "active",
 ]);
 
+// Activity kinds for the lead timeline (B3). The initial "created" event is
+// rendered from the lead row itself; persisted kinds are pipeline status
+// changes and free-text notes logged by the client team.
+export const leadActivityKind = pgEnum("lead_activity_kind", [
+  "note",
+  "status_change",
+]);
+
 // -- Tenants --
 // A client is a row. niche+city is unique -- enforces "one client per
 // niche per city" at the database level, making the exclusivity promise
@@ -275,6 +283,33 @@ export const leads = pgTable(
   })
 );
 
+// -- Lead activities --
+// Append-only timeline for a single lead (B3): status changes + notes from
+// the client console. Scoped by tenant_id (explicit WHERE + RLS) and lead_id.
+export const leadActivities = pgTable(
+  "lead_activities",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => tenants.id, { onDelete: "cascade" }),
+    leadId: uuid("lead_id")
+      .notNull()
+      .references(() => leads.id, { onDelete: "cascade" }),
+    kind: leadActivityKind("kind").notNull().default("note"),
+    body: text("body"),
+    // Display name / email of who logged it (client team member).
+    actor: text("actor"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => ({
+    leadIdx: index("lead_activities_lead_idx").on(t.leadId),
+    tenantIdx: index("lead_activities_tenant_idx").on(t.tenantId),
+  })
+);
+
 // -- Change requests --
 // Paper trail: every change goes queued -- ... -- published. VA-operable.
 export const changeRequests = pgTable(
@@ -421,6 +456,20 @@ export const notificationsRelations = relations(notifications, ({ one }) => ({
     references: [leads.id],
   }),
 }));
+
+export const leadActivitiesRelations = relations(
+  leadActivities,
+  ({ one }) => ({
+    tenant: one(tenants, {
+      fields: [leadActivities.tenantId],
+      references: [tenants.id],
+    }),
+    lead: one(leads, {
+      fields: [leadActivities.leadId],
+      references: [leads.id],
+    }),
+  })
+);
 
 export const domainsRelations = relations(domains, ({ one }) => ({
   tenant: one(tenants, {

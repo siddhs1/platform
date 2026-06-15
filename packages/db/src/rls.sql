@@ -26,7 +26,8 @@ declare
     'change_requests',
     'subscriptions',
     'notifications',
-    'memberships'
+    'memberships',
+    'lead_activities'
   ];
 begin
   foreach t in array tenant_tables loop

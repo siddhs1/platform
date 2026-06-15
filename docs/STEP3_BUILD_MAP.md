@@ -39,12 +39,13 @@ Calm, light, trust-forward, deliberately distinct from the operator console (dar
 - [x] **B1.1** `lib/portal-queries.ts` -- `getDashboard()` (leads this/last month, calls this month, est. pipeline + count, per-day sparkline, recent leads, what's-new from `config_versions`, `hasAnyData`) + `newLeadCount()`.
 - [x] **B1.2** `app/portal/page.tsx` (force-dynamic) -- greeting + period chip; KPI cards (Leads w/ trend + sparkline, Calls, Reviews [P2] "soon", Est. pipeline); recent-leads mini-list + what's-new feed; quick-action buttons (disabled until their screens ship); plan/next-charge money strip; first-run empty-state checklist when no data.
 
-## Phase 2 -- B2 leads list + B3 lead detail  `[v1]`
-- [ ] **B2.0** Migration **0006**: `lead_activities` table (tenant FK, lead FK, kind, body, actor, createdAt) + RLS, for the lead timeline + status-change log.
-- [ ] **B2.1** Leads list: filter (status/source/date), search, pagination; row = name/phone/source/status/value/age; tenant-scoped.
-- [ ] **B2.2** Status workflow (new -> contacted -> quoted -> won/lost) with optimistic update + activity log; nav badge reflects `new`.
-- [ ] **B3.1** Lead detail: contact, message, source, value estimate (editable), status, timeline of activities; quick actions (call/email links, add note).
-- [ ] **B2.V** Flip `Leads` nav item `enabled`; verify list + detail + status changes; build + smoke.
+## Phase 2 -- B2 leads list + B3 lead detail  `[v1]`  [DONE 2026-06-14]
+> Shipped via Windows-MCP on `develop` (migration 0006 applied to Neon + verified). Deferred, non-blocking: the Kanban pipeline board view, the date-range filter, and true optimistic UI (status changes use a JS-free form server action + `revalidatePath`, not client-side optimistic update).
+- [x] **B2.0** Migration **0006** (`0006_free_roland_deschain.sql`, additive): `lead_activity_kind` enum (`note`/`status_change`) + `lead_activities` table (tenant FK cascade, lead FK cascade, kind, body, actor, createdAt) + 2 indexes; added to `rls.sql` `tenant_tables` (RLS enabled+forced+`tenant_isolation`). Applied + verified on Neon (7 cols, RLS forced, policy, indexes, enum).
+- [x] **B2.1** Leads list (`/portal/leads`): status tabs w/ counts + source filter + search (name/phone/email/message) + server-side pagination (25/page); row = status dot + name/phone + status tag + source + message snippet + value + age + chevron -> detail; tenant-scoped via `requirePortal()`. (Date filter + Kanban view deferred.)
+- [x] **B2.2** Status workflow (new -> contacted -> quoted -> won/lost) via a form server action; every change appends a `status_change` activity (with actor); nav `Leads` badge reflects the `new` count.
+- [x] **B3.1** Lead detail (`/portal/leads/[leadId]`): contact (click-to-call / text / email), source + received-at, editable estimated value (logged), message, status dropdown + Mark won/lost; activity timeline (status changes + notes + synthetic "created"); add-note composer; won reveals review/invoice CTAs (disabled, arrive in Phase 2 retention work).
+- [x] **B2.V** Flipped `Leads` nav `enabled`; bare `pnpm typecheck` 6/6 + `lint` 2/2 + production `build` 2/2 green (both new routes registered dynamic). NOTE: a full authed `/portal` runtime smoke is not possible headlessly now that real Clerk keys are live -- it needs a signed-in client session (the B14 invitation flow). Data layer: `apps/console/src/lib/portal-leads.ts`; actions: `app/portal/leads/actions.ts`.
 
 ## Phase 3 -- B4 requests list + B5 request create/approve  `[v1]`
 - [ ] **B4.1** Change-requests list (reuses `change_requests`): status, type, submitted/updated, who.
@@ -78,4 +79,4 @@ Calm, light, trust-forward, deliberately distinct from the operator console (dar
 
 ---
 
-_Last updated: 2026-06-14. Maintained alongside `docs/PRD.md`, `docs/WIREFRAMES.md`, `docs/STEP2_BUILD_MAP.md`, and `memory.db`._
+_Last updated: 2026-06-14 (Phase 2 B2/B3 shipped). Maintained alongside `docs/PRD.md`, `docs/WIREFRAMES.md`, `docs/STEP2_BUILD_MAP.md`, and `memory.db`._
